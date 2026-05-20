@@ -1,0 +1,88 @@
+{
+  "name": "@nova-ai/googlechat",
+  "version": "2026.5.19",
+  "description": "Nova AI Google Chat channel plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "gaxios": "7.1.4",
+    "google-auth-library": "10.6.2",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "setupEntry": "./setup-entry.ts",
+    "channel": {
+      "id": "googlechat",
+      "label": "Google Chat",
+      "selectionLabel": "Google Chat (Chat API)",
+      "detailLabel": "Google Chat",
+      "docsPath": "/channels/googlechat",
+      "docsLabel": "googlechat",
+      "blurb": "Google Workspace Chat app with HTTP webhook.",
+      "aliases": [
+        "gchat",
+        "google-chat"
+      ],
+      "order": 55,
+      "systemImage": "message.badge",
+      "markdownCapable": true,
+      "doctorCapabilities": {
+        "dmAllowFromMode": "nestedOnly",
+        "groupModel": "route",
+        "groupAllowFromFallbackToAllowFrom": false,
+        "warnOnEmptyGroupSenderAllowlist": false
+      },
+      "cliAddOptions": [
+        {
+          "flags": "--webhook-path <path>",
+          "description": "Google Chat webhook path"
+        },
+        {
+          "flags": "--webhook-url <url>",
+          "description": "Google Chat webhook URL"
+        },
+        {
+          "flags": "--audience-type <type>",
+          "description": "Google Chat audience type (app-url|project-number)"
+        },
+        {
+          "flags": "--audience <value>",
+          "description": "Google Chat audience value (app URL or project number)"
+        }
+      ]
+    },
+    "install": {
+      "npmSpec": "@nova-ai/googlechat",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.4.10"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

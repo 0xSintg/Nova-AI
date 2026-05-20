@@ -1,0 +1,19 @@
+{
+  "name": "@nova-ai/github-copilot-provider",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI GitHub Copilot provider plugin",
+  "type": "module",
+  "dependencies": {
+    "@clack/prompts": "1.4.0"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-ai": "0.75.1",
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

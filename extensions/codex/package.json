@@ -1,0 +1,40 @@
+{
+  "name": "@nova-ai/codex",
+  "version": "2026.5.19",
+  "description": "Nova AI Codex harness and model provider plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "0.75.1",
+    "@openai/codex": "0.132.0",
+    "ajv": "8.20.0",
+    "ws": "8.20.1",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "install": {
+      "npmSpec": "@nova-ai/codex",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.5.1-beta.1"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

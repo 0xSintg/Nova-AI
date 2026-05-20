@@ -1,0 +1,15 @@
+{
+  "name": "@nova-ai/open-prose",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "OpenProse VM skill pack plugin (slash command + telemetry).",
+  "type": "module",
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

@@ -1,0 +1,506 @@
+import { mkdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { bundledPluginFile, bundledPluginRoot } from "nova-ai/plugin-sdk/test-fixtures";
+import { afterEach, describe, expect, it } from "vitest";
+import { collectClawHubPublishablePluginPackages } from "../scripts/lib/plugin-clawhub-release.ts";
+import {
+  collectPublishablePluginPackages,
+  collectChangedExtensionIdsFromPaths,
+  collectPublishablePluginPackageErrors,
+  NOVA_AI_PLUGIN_NPM_REPOSITORY_URL,
+  parsePluginReleaseArgs,
+  parsePluginReleaseSelection,
+  parsePluginReleaseSelectionMode,
+  resolveChangedPublishablePluginPackages,
+  resolveSelectedPublishablePluginPackages,
+  type PublishablePluginPackage,
+} from "../scripts/lib/plugin-npm-release.ts";
+import { cleanupTempDirs, makeTempRepoRoot, writeJsonFile } from "./helpers/temp-repo.js";
+
+const tempDirs: string[] = [];
+
+afterEach(() => {
+  cleanupTempDirs(tempDirs);
+});
+
+describe("parsePluginReleaseSelection", () => {
+  it("returns an empty list for blank input", () => {
+    expect(parsePluginReleaseSelection("")).toStrictEqual([]);
+    expect(parsePluginReleaseSelection("   ")).toStrictEqual([]);
+    expect(parsePluginReleaseSelection(undefined)).toStrictEqual([]);
+  });
+
+  it("dedupes and sorts comma or whitespace separated package names", () => {
+    expect(
+      parsePluginReleaseSelection(" @nova-ai/zalo, @nova-ai/feishu  @nova-ai/zalo "),
+    ).toEqual(["@nova-ai/feishu", "@nova-ai/zalo"]);
+  });
+});
+
+describe("parsePluginReleaseSelectionMode", () => {
+  it("accepts the supported explicit selection modes", () => {
+    expect(parsePluginReleaseSelectionMode("selected")).toBe("selected");
+    expect(parsePluginReleaseSelectionMode("all-publishable")).toBe("all-publishable");
+  });
+
+  it("rejects unsupported selection modes", () => {
+    expect(() => parsePluginReleaseSelectionMode("all")).toThrowError(
+      'Unknown selection mode: all. Expected "selected" or "all-publishable".',
+    );
+  });
+});
+
+describe("parsePluginReleaseArgs", () => {
+  it("rejects blank explicit plugin selections", () => {
+    expect(() => parsePluginReleaseArgs(["--plugins", "   "])).toThrowError(
+      "`--plugins` must include at least one package name.",
+    );
+  });
+
+  it("requires plugin names for selected explicit publish mode", () => {
+    expect(() => parsePluginReleaseArgs(["--selection-mode", "selected"])).toThrowError(
+      "`--selection-mode selected` requires `--plugins`.",
+    );
+  });
+
+  it("rejects plugin names when all-publishable mode is selected", () => {
+    expect(() =>
+      parsePluginReleaseArgs([
+        "--selection-mode",
+        "all-publishable",
+        "--plugins",
+        "@nova-ai/zalo",
+      ]),
+    ).toThrowError("`--selection-mode all-publishable` must not be combined with `--plugins`.");
+  });
+
+  it("parses explicit all-publishable mode", () => {
+    expect(parsePluginReleaseArgs(["--selection-mode", "all-publishable"])).toEqual({
+      baseRef: undefined,
+      headRef: undefined,
+      selectionMode: "all-publishable",
+      selection: [],
+      pluginsFlagProvided: false,
+    });
+  });
+});
+
+function externalPluginContract(version: string) {
+  return {
+    compat: {
+      pluginApi: `>=${version}`,
+    },
+    build: {
+      nova-aiVersion: version,
+    },
+  };
+}
+
+describe("collectPublishablePluginPackageErrors", () => {
+  it("accepts a valid publishable plugin package candidate", () => {
+    expect(
+      collectPublishablePluginPackageErrors({
+        extensionId: "zalo",
+        packageDir: bundledPluginRoot("zalo"),
+        packageJson: {
+          name: "@nova-ai/zalo",
+          version: "2026.3.15",
+          repository: {
+            type: "git",
+            url: NOVA_AI_PLUGIN_NPM_REPOSITORY_URL,
+          },
+          nova-ai: {
+            extensions: ["./index.ts"],
+            ...externalPluginContract("2026.3.15"),
+            install: {
+              npmSpec: "@nova-ai/zalo",
+            },
+            release: {
+              publishToNpm: true,
+            },
+          },
+        },
+      }),
+    ).toStrictEqual([]);
+  });
+
+  it("flags invalid publishable plugin metadata", () => {
+    expect(
+      collectPublishablePluginPackageErrors({
+        extensionId: "broken",
+        packageDir: bundledPluginRoot("broken"),
+        packageJson: {
+          name: "broken",
+          version: "latest",
+          private: true,
+          nova-ai: {
+            extensions: [""],
+            ...externalPluginContract("2026.3.15"),
+            install: {
+              npmSpec: "   ",
+            },
+            release: {
+              publishToNpm: true,
+            },
+          },
+        },
+      }),
+    ).toEqual([
+      'package name must start with "@nova-ai/"; found "broken".',
+      "package.json private must not be true.",
+      `package.json repository.url must be "${NOVA_AI_PLUGIN_NPM_REPOSITORY_URL}" so npm provenance can validate GitHub trusted publishing; found "<missing>".`,
+      'package.json version must match YYYY.M.D, YYYY.M.D-N, YYYY.M.D-alpha.N, or YYYY.M.D-beta.N; found "latest".',
+      "nova-ai.extensions must contain only non-empty strings.",
+      "nova-ai.install.npmSpec must be a non-empty string for publishable plugins.",
+    ]);
+  });
+
+  it("requires the GitHub repository URL npm provenance validates for trusted publishing", () => {
+    expect(
+      collectPublishablePluginPackageErrors({
+        extensionId: "twitch",
+        packageDir: bundledPluginRoot("twitch"),
+        packageJson: {
+          name: "@nova-ai/twitch",
+          version: "2026.5.1-beta.1",
+          nova-ai: {
+            extensions: ["./index.ts"],
+            ...externalPluginContract("2026.5.1-beta.1"),
+            install: {
+              npmSpec: "@nova-ai/twitch",
+            },
+            release: {
+              publishToNpm: true,
+            },
+          },
+        },
+      }),
+    ).toEqual([
+      `package.json repository.url must be "${NOVA_AI_PLUGIN_NPM_REPOSITORY_URL}" so npm provenance can validate GitHub trusted publishing; found "<missing>".`,
+    ]);
+  });
+
+  it("requires npm install metadata for publishable plugins", () => {
+    expect(
+      collectPublishablePluginPackageErrors({
+        extensionId: "voice-call",
+        packageDir: bundledPluginRoot("voice-call"),
+        packageJson: {
+          name: "@nova-ai/voice-call",
+          version: "2026.5.1-beta.1",
+          repository: {
+            type: "git",
+            url: NOVA_AI_PLUGIN_NPM_REPOSITORY_URL,
+          },
+          nova-ai: {
+            extensions: ["./index.ts"],
+            ...externalPluginContract("2026.5.1-beta.1"),
+            release: {
+              publishToNpm: true,
+            },
+          },
+        },
+      }),
+    ).toEqual(["nova-ai.install.npmSpec must be a non-empty string for publishable plugins."]);
+  });
+
+  it("requires the external plugin package compatibility contract for npm publish", () => {
+    expect(
+      collectPublishablePluginPackageErrors({
+        extensionId: "voice-call",
+        packageDir: bundledPluginRoot("voice-call"),
+        packageJson: {
+          name: "@nova-ai/voice-call",
+          version: "2026.5.1-beta.1",
+          repository: {
+            type: "git",
+            url: NOVA_AI_PLUGIN_NPM_REPOSITORY_URL,
+          },
+          nova-ai: {
+            extensions: ["./index.ts"],
+            install: {
+              npmSpec: "@nova-ai/voice-call",
+            },
+            release: {
+              publishToNpm: true,
+            },
+          },
+        },
+      }),
+    ).toEqual([
+      "nova-ai.compat.pluginApi is required for external code plugin packages.",
+      "nova-ai.build.nova-aiVersion is required for external code plugin packages.",
+    ]);
+  });
+});
+
+describe("collectPublishablePluginPackages", () => {
+  it("keeps publishable plugin dist trees out of the core npm package files list", () => {
+    const corePackageRuntimePluginIds = new Set(["discord"]);
+    const rootPackage = JSON.parse(readFileSync("package.json", "utf8")) as {
+      files?: unknown;
+    };
+    const packageFiles = new Set(Array.isArray(rootPackage.files) ? rootPackage.files : []);
+    const publishablePlugins = [
+      ...collectPublishablePluginPackages(),
+      ...collectClawHubPublishablePluginPackages(),
+    ];
+    const missingExclusions = Array.from(
+      new Set(
+        publishablePlugins
+          .filter((plugin) => !corePackageRuntimePluginIds.has(plugin.extensionId))
+          .map((plugin) => `!dist/extensions/${plugin.extensionId}/**`),
+      ),
+    ).filter((entry) => !packageFiles.has(entry));
+
+    expect(missingExclusions).toStrictEqual([]);
+  });
+
+  it("collects publishable npm plugins from extension package manifests", () => {
+    const repoDir = makeTempRepoRoot(tempDirs, "nova-ai-plugin-npm-release-");
+    mkdirSync(join(repoDir, "extensions", "demo-plugin"), { recursive: true });
+    writeJsonFile(join(repoDir, "extensions", "demo-plugin", "package.json"), {
+      name: "@nova-ai/demo-plugin",
+      version: "2026.4.10",
+      repository: {
+        type: "git",
+        url: NOVA_AI_PLUGIN_NPM_REPOSITORY_URL,
+      },
+      nova-ai: {
+        extensions: ["./index.ts"],
+        ...externalPluginContract("2026.4.10"),
+        install: {
+          npmSpec: "@nova-ai/demo-plugin",
+        },
+        release: {
+          publishToNpm: true,
+        },
+      },
+    });
+
+    expect(collectPublishablePluginPackages(repoDir)).toEqual([
+      {
+        extensionId: "demo-plugin",
+        packageDir: "extensions/demo-plugin",
+        packageName: "@nova-ai/demo-plugin",
+        version: "2026.4.10",
+        channel: "stable",
+        publishTag: "latest",
+        installNpmSpec: "@nova-ai/demo-plugin",
+      },
+    ]);
+  });
+
+  it("does not validate unselected publishable plugin manifests", () => {
+    const repoDir = makeTempRepoRoot(tempDirs, "nova-ai-plugin-npm-release-");
+    mkdirSync(join(repoDir, "extensions", "demo-plugin"), { recursive: true });
+    writeJsonFile(join(repoDir, "extensions", "demo-plugin", "package.json"), {
+      name: "@nova-ai/demo-plugin",
+      version: "2026.4.10-beta.1",
+      repository: {
+        type: "git",
+        url: NOVA_AI_PLUGIN_NPM_REPOSITORY_URL,
+      },
+      nova-ai: {
+        extensions: ["./index.ts"],
+        ...externalPluginContract("2026.4.10-beta.1"),
+        install: {
+          npmSpec: "@nova-ai/demo-plugin",
+        },
+        release: {
+          publishToNpm: true,
+        },
+      },
+    });
+    mkdirSync(join(repoDir, "extensions", "private-plugin"), { recursive: true });
+    writeJsonFile(join(repoDir, "extensions", "private-plugin", "package.json"), {
+      name: "@nova-ai/private-plugin",
+      version: "2026.4.10-beta.1",
+      private: true,
+      nova-ai: {
+        extensions: ["./index.ts"],
+        ...externalPluginContract("2026.4.10-beta.1"),
+        install: {
+          npmSpec: "@nova-ai/private-plugin",
+        },
+        release: {
+          publishToNpm: true,
+        },
+      },
+    });
+
+    expect(
+      collectPublishablePluginPackages(repoDir, {
+        packageNames: ["@nova-ai/demo-plugin"],
+      }),
+    ).toEqual([
+      {
+        extensionId: "demo-plugin",
+        packageDir: "extensions/demo-plugin",
+        installNpmSpec: "@nova-ai/demo-plugin",
+        channel: "beta",
+        packageName: "@nova-ai/demo-plugin",
+        publishTag: "beta",
+        version: "2026.4.10-beta.1",
+      },
+    ]);
+  });
+
+  it("treats an explicit empty extension filter as no candidates", () => {
+    const repoDir = makeTempRepoRoot(tempDirs, "nova-ai-plugin-npm-release-");
+    mkdirSync(join(repoDir, "extensions", "private-plugin"), { recursive: true });
+    writeJsonFile(join(repoDir, "extensions", "private-plugin", "package.json"), {
+      name: "@nova-ai/private-plugin",
+      version: "2026.4.10-beta.1",
+      private: true,
+      nova-ai: {
+        extensions: ["./index.ts"],
+        ...externalPluginContract("2026.4.10-beta.1"),
+        release: {
+          publishToNpm: true,
+        },
+      },
+    });
+
+    expect(
+      collectPublishablePluginPackages(repoDir, {
+        extensionIds: [],
+      }),
+    ).toStrictEqual([]);
+  });
+
+  it("publishes alpha plugin packages to the alpha dist-tag", () => {
+    const repoDir = makeTempRepoRoot(tempDirs, "nova-ai-plugin-npm-release-");
+    mkdirSync(join(repoDir, "extensions", "demo-plugin"), { recursive: true });
+    writeJsonFile(join(repoDir, "extensions", "demo-plugin", "package.json"), {
+      name: "@nova-ai/demo-plugin",
+      version: "2026.4.10-alpha.1",
+      repository: {
+        type: "git",
+        url: NOVA_AI_PLUGIN_NPM_REPOSITORY_URL,
+      },
+      nova-ai: {
+        extensions: ["./index.ts"],
+        ...externalPluginContract("2026.4.10-alpha.1"),
+        install: {
+          npmSpec: "@nova-ai/demo-plugin",
+        },
+        release: {
+          publishToNpm: true,
+        },
+      },
+    });
+
+    expect(collectPublishablePluginPackages(repoDir)).toEqual([
+      {
+        extensionId: "demo-plugin",
+        packageDir: "extensions/demo-plugin",
+        installNpmSpec: "@nova-ai/demo-plugin",
+        packageName: "@nova-ai/demo-plugin",
+        channel: "alpha",
+        publishTag: "alpha",
+        version: "2026.4.10-alpha.1",
+      },
+    ]);
+  });
+});
+
+describe("resolveSelectedPublishablePluginPackages", () => {
+  const publishablePlugins: PublishablePluginPackage[] = [
+    {
+      extensionId: "feishu",
+      packageDir: bundledPluginRoot("feishu"),
+      packageName: "@nova-ai/feishu",
+      version: "2026.3.15",
+      channel: "stable",
+      publishTag: "latest",
+    },
+    {
+      extensionId: "zalo",
+      packageDir: bundledPluginRoot("zalo"),
+      packageName: "@nova-ai/zalo",
+      version: "2026.3.15-beta.1",
+      channel: "beta",
+      publishTag: "beta",
+    },
+  ];
+
+  it("returns all publishable plugins when no selection is provided", () => {
+    expect(
+      resolveSelectedPublishablePluginPackages({
+        plugins: publishablePlugins,
+        selection: [],
+      }),
+    ).toEqual(publishablePlugins);
+  });
+
+  it("filters by selected publishable package names", () => {
+    expect(
+      resolveSelectedPublishablePluginPackages({
+        plugins: publishablePlugins,
+        selection: ["@nova-ai/zalo"],
+      }),
+    ).toEqual([publishablePlugins[1]]);
+  });
+
+  it("throws when the selection contains an unknown package name", () => {
+    expect(() =>
+      resolveSelectedPublishablePluginPackages({
+        plugins: publishablePlugins,
+        selection: ["@nova-ai/missing"],
+      }),
+    ).toThrowError("Unknown or non-publishable plugin package selection: @nova-ai/missing.");
+  });
+});
+
+describe("collectChangedExtensionIdsFromPaths", () => {
+  it("extracts unique extension ids from changed extension paths", () => {
+    expect(
+      collectChangedExtensionIdsFromPaths([
+        bundledPluginFile("zalo", "index.ts"),
+        bundledPluginFile("zalo", "package.json"),
+        bundledPluginFile("feishu", "src/client.ts"),
+        "docs/reference/RELEASING.md",
+      ]),
+    ).toEqual(["feishu", "zalo"]);
+  });
+});
+
+describe("resolveChangedPublishablePluginPackages", () => {
+  const publishablePlugins: PublishablePluginPackage[] = [
+    {
+      extensionId: "feishu",
+      packageDir: bundledPluginRoot("feishu"),
+      packageName: "@nova-ai/feishu",
+      version: "2026.3.15",
+      channel: "stable",
+      publishTag: "latest",
+    },
+    {
+      extensionId: "zalo",
+      packageDir: bundledPluginRoot("zalo"),
+      packageName: "@nova-ai/zalo",
+      version: "2026.3.15-beta.1",
+      channel: "beta",
+      publishTag: "beta",
+    },
+  ];
+
+  it("returns only changed publishable plugins", () => {
+    expect(
+      resolveChangedPublishablePluginPackages({
+        plugins: publishablePlugins,
+        changedExtensionIds: ["zalo"],
+      }),
+    ).toEqual([publishablePlugins[1]]);
+  });
+
+  it("returns an empty list when no publishable plugins changed", () => {
+    expect(
+      resolveChangedPublishablePluginPackages({
+        plugins: publishablePlugins,
+        changedExtensionIds: [],
+      }),
+    ).toStrictEqual([]);
+  });
+});

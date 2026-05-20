@@ -1,0 +1,39 @@
+{
+  "name": "@nova-ai/amazon-bedrock-mantle-provider",
+  "version": "2026.5.19",
+  "description": "Nova AI Amazon Bedrock Mantle (OpenAI-compatible) provider plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.95.2",
+    "@aws/bedrock-token-generator": "1.1.0",
+    "@earendil-works/pi-ai": "0.75.1"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "install": {
+      "npmSpec": "@nova-ai/amazon-bedrock-mantle-provider",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.5.12-beta.1"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19",
+      "bundledDist": false
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

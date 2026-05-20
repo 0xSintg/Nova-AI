@@ -1,0 +1,27 @@
+{
+  "name": "@nova-ai/migrate-hermes",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Hermes to Nova AI migration provider",
+  "type": "module",
+  "dependencies": {
+    "yaml": "2.9.0"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

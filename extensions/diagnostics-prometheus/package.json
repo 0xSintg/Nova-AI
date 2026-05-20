@@ -1,0 +1,34 @@
+{
+  "name": "@nova-ai/diagnostics-prometheus",
+  "version": "2026.5.19",
+  "description": "Nova AI diagnostics Prometheus exporter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "install": {
+      "clawhubSpec": "clawhub:@nova-ai/diagnostics-prometheus",
+      "npmSpec": "@nova-ai/diagnostics-prometheus",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.4.25"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

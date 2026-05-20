@@ -1,0 +1,14 @@
+{
+  "name": "@nova-ai/media-understanding-core",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI media understanding runtime package",
+  "type": "module",
+  "dependencies": {
+    "sharp": "0.34.5"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {}
+}

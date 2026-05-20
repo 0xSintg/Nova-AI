@@ -1,0 +1,39 @@
+{
+  "name": "@nova-ai/memory-lancedb",
+  "version": "2026.5.19",
+  "description": "Nova AI LanceDB-backed long-term memory plugin with auto-recall/capture",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "@lancedb/lancedb": "0.27.2",
+    "apache-arrow": "18.1.0",
+    "openai": "6.37.0",
+    "typebox": "1.1.38"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "install": {
+      "npmSpec": "@nova-ai/memory-lancedb",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.4.10"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

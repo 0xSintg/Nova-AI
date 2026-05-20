@@ -1,0 +1,10 @@
+{
+  "name": "@nova-ai/speech-core",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI speech runtime package",
+  "type": "module",
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  }
+}

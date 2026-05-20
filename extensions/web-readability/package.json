@@ -1,0 +1,19 @@
+{
+  "name": "@nova-ai/web-readability-plugin",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI local Readability web extraction plugin",
+  "type": "module",
+  "dependencies": {
+    "@mozilla/readability": "0.6.0",
+    "linkedom": "0.18.12"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

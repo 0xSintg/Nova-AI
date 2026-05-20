@@ -1,0 +1,173 @@
+name: Android Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"           # Trigger on version tags e.g. v2026.5.19
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: "Build flavor"
+        required: true
+        default: thirdParty
+        type: choice
+        options:
+          - thirdParty
+          - play
+      build_type:
+        description: "Build type"
+        required: true
+        default: release
+        type: choice
+        options:
+          - release
+          - debug
+
+jobs:
+  build:
+    name: Build Nova AI APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+
+    permissions:
+      contents: write   # needed to upload to GitHub Releases
+
+    steps:
+      # ── 1. Source ────────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Java ──────────────────────────────────────────────────────────────
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+          cache-dependency-path: |
+            apps/android/**/*.gradle*
+            apps/android/**/gradle-wrapper.properties
+            apps/android/gradle/libs.versions.toml
+
+      # ── 3. Android SDK ───────────────────────────────────────────────────────
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: ~/.android-sdk
+          key: ${{ runner.os }}-android-sdk-v1-cmdline-12266719-platform-36-build-tools-36.0.0
+          restore-keys: |
+            ${{ runner.os }}-android-sdk-v1-
+
+      - name: Set up Android SDK cmdline-tools
+        run: |
+          set -euo pipefail
+          ANDROID_SDK_ROOT="$HOME/.android-sdk"
+          CMDLINE_TOOLS_VERSION="12266719"
+          ARCHIVE="commandlinetools-linux-${CMDLINE_TOOLS_VERSION}_latest.zip"
+          URL="https://dl.google.com/android/repository/${ARCHIVE}"
+
+          if [ ! -x "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ]; then
+            mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
+            curl -fsSL "$URL" -o "/tmp/${ARCHIVE}"
+            rm -rf "$ANDROID_SDK_ROOT/cmdline-tools/latest"
+            unzip -q "/tmp/${ARCHIVE}" -d "$ANDROID_SDK_ROOT/cmdline-tools"
+            mv "$ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools" "$ANDROID_SDK_ROOT/cmdline-tools/latest"
+          fi
+
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_HOME=$ANDROID_SDK_ROOT"     >> "$GITHUB_ENV"
+          echo "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          echo "$ANDROID_SDK_ROOT/platform-tools"           >> "$GITHUB_PATH"
+
+      - name: Install Android SDK packages
+        run: |
+          yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses >/dev/null
+          sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --install \
+            "platform-tools"      \
+            "platforms;android-36" \
+            "build-tools;36.0.0"
+
+      # ── 4. Signing keystore ──────────────────────────────────────────────────
+      #
+      # For release builds, add these secrets in:
+      #   GitHub repo → Settings → Secrets and variables → Actions
+      #
+      #   NOVA_AI_KEYSTORE_BASE64   – base64-encoded .jks keystore file
+      #                               Generate with:
+      #                                 keytool -genkeypair -v \
+      #                                   -keystore nova-ai.jks \
+      #                                   -keyalg RSA -keysize 2048 \
+      #                                   -validity 10000 \
+      #                                   -alias nova-ai-key
+      #                                 base64 -w0 nova-ai.jks
+      #   NOVA_AI_KEYSTORE_PASSWORD – keystore password
+      #   NOVA_AI_KEY_ALIAS         – key alias (e.g. nova-ai-key)
+      #   NOVA_AI_KEY_PASSWORD      – key password
+
+      - name: Resolve build inputs
+        id: inputs
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "flavor=${{ inputs.flavor }}"       >> "$GITHUB_OUTPUT"
+            echo "build_type=${{ inputs.build_type }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "flavor=thirdParty" >> "$GITHUB_OUTPUT"
+            echo "build_type=release" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Decode keystore (release builds only)
+        if: steps.inputs.outputs.build_type == 'release'
+        run: |
+          echo "${{ secrets.NOVA_AI_KEYSTORE_BASE64 }}" | base64 --decode > "$RUNNER_TEMP/nova-ai.jks"
+
+      - name: Write Gradle signing properties (release builds only)
+        if: steps.inputs.outputs.build_type == 'release'
+        run: |
+          mkdir -p "$HOME/.gradle"
+          cat >> "$HOME/.gradle/gradle.properties" << EOF
+          NOVA_AI_ANDROID_STORE_FILE=$RUNNER_TEMP/nova-ai.jks
+          NOVA_AI_ANDROID_STORE_PASSWORD=${{ secrets.NOVA_AI_KEYSTORE_PASSWORD }}
+          NOVA_AI_ANDROID_KEY_ALIAS=${{ secrets.NOVA_AI_KEY_ALIAS }}
+          NOVA_AI_ANDROID_KEY_PASSWORD=${{ secrets.NOVA_AI_KEY_PASSWORD }}
+          EOF
+
+      # ── 5. Build ─────────────────────────────────────────────────────────────
+      - name: Build APK
+        working-directory: apps/android
+        run: |
+          set -euo pipefail
+          FLAVOR="${{ steps.inputs.outputs.flavor }}"
+          BUILD_TYPE="${{ steps.inputs.outputs.build_type }}"
+
+          # Capitalise first letter for Gradle task name (e.g. thirdParty → ThirdParty)
+          FLAVOR_CAP="$(echo "${FLAVOR:0:1}" | tr '[:lower:]' '[:upper:]')${FLAVOR:1}"
+          BUILD_TYPE_CAP="$(echo "${BUILD_TYPE:0:1}" | tr '[:lower:]' '[:upper:]')${BUILD_TYPE:1}"
+
+          ./gradlew --no-daemon --build-cache \
+            ":app:assemble${FLAVOR_CAP}${BUILD_TYPE_CAP}"
+
+      # ── 6. Collect APK ───────────────────────────────────────────────────────
+      - name: Locate APK
+        id: apk
+        run: |
+          APK_PATH=$(find apps/android/app/build/outputs/apk \
+            -name "nova-ai-*.apk" | head -1)
+          echo "path=${APK_PATH}" >> "$GITHUB_OUTPUT"
+          echo "name=$(basename ${APK_PATH})" >> "$GITHUB_OUTPUT"
+          echo "Found APK: ${APK_PATH}"
+
+      # ── 7. Upload as artifact (every run) ────────────────────────────────────
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.apk.outputs.name }}
+          path: ${{ steps.apk.outputs.path }}
+          retention-days: 30
+
+      # ── 8. Attach to GitHub Release (tag pushes only) ────────────────────────
+      - name: Attach APK to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.apk.outputs.path }}
+          generate_release_notes: true

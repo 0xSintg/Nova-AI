@@ -1,0 +1,30 @@
+{
+  "name": "@nova-ai/oc-path",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI oc:// workspace path plugin",
+  "type": "module",
+  "dependencies": {
+    "commander": "14.0.3",
+    "jsonc-parser": "3.3.1",
+    "markdown-it": "14.1.1",
+    "yaml": "2.9.0"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

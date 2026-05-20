@@ -1,0 +1,23 @@
+---
+summary: "Adds Qwen, Qwen Cloud, Model Studio, DashScope model provider support to Nova AI."
+read_when:
+  - You are installing, configuring, or auditing the qwen plugin
+title: "Qwen plugin"
+---
+
+# Qwen plugin
+
+Adds Qwen, Qwen Cloud, Model Studio, DashScope model provider support to Nova AI.
+
+## Distribution
+
+- Package: `@nova-ai/qwen-provider`
+- Install route: included in Nova AI
+
+## Surface
+
+providers: qwen, qwencloud, modelstudio, dashscope; contracts: mediaUnderstandingProviders, videoGenerationProviders
+
+## Related docs
+
+- [qwen](/providers/qwen)

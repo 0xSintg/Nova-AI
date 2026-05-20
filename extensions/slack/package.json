@@ -1,0 +1,79 @@
+{
+  "name": "@nova-ai/slack",
+  "version": "2026.5.19",
+  "description": "Nova AI Slack channel plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "@slack/bolt": "4.7.2",
+    "@slack/types": "2.21.1",
+    "@slack/web-api": "7.16.0",
+    "https-proxy-agent": "9.0.0",
+    "typebox": "1.1.38",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "setupEntry": "./setup-entry.ts",
+    "channel": {
+      "id": "slack",
+      "label": "Slack",
+      "selectionLabel": "Slack (Socket Mode)",
+      "detailLabel": "Slack Bot",
+      "docsPath": "/channels/slack",
+      "docsLabel": "slack",
+      "blurb": "supported (Socket Mode).",
+      "systemImage": "number",
+      "markdownCapable": true,
+      "commands": {
+        "nativeCommandsAutoEnabled": false,
+        "nativeSkillsAutoEnabled": false
+      },
+      "configuredState": {
+        "env": {
+          "anyOf": [
+            "SLACK_APP_TOKEN",
+            "SLACK_BOT_TOKEN",
+            "SLACK_USER_TOKEN"
+          ]
+        },
+        "specifier": "./configured-state",
+        "exportName": "hasSlackConfiguredState"
+      }
+    },
+    "install": {
+      "npmSpec": "@nova-ai/slack",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.5.12-beta.1",
+      "allowInvalidConfigRecovery": true
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19",
+      "bundledDist": false
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

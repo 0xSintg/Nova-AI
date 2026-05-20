@@ -1,0 +1,38 @@
+{
+  "name": "@nova-ai/lobster",
+  "version": "2026.5.19",
+  "description": "Lobster workflow tool plugin (typed pipelines + resumable approvals)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "@novabot/lobster": "2026.4.6",
+    "ajv": "8.20.0",
+    "typebox": "1.1.38"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "install": {
+      "npmSpec": "@nova-ai/lobster",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.4.25"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

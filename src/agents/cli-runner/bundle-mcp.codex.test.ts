@@ -1,0 +1,45 @@
+import { describe, expect, it } from "vitest";
+import { prepareCliBundleMcpConfig } from "./bundle-mcp.js";
+
+describe("prepareCliBundleMcpConfig codex", () => {
+  it("injects codex MCP config overrides with env-backed loopback headers", async () => {
+    const prepared = await prepareCliBundleMcpConfig({
+      enabled: true,
+      mode: "codex-config-overrides",
+      backend: {
+        command: "codex",
+        args: ["exec", "--json"],
+        resumeArgs: ["exec", "resume", "{sessionId}"],
+      },
+      workspaceDir: "/tmp/nova-ai-bundle-mcp-codex",
+      config: { plugins: { enabled: false } },
+      additionalConfig: {
+        mcpServers: {
+          nova-ai: {
+            type: "http",
+            url: "http://127.0.0.1:23119/mcp",
+            headers: {
+              Authorization: "Bearer ${NOVA_AI_MCP_TOKEN}",
+              "x-session-key": "${NOVA_AI_MCP_SESSION_KEY}",
+            },
+          },
+        },
+      },
+    });
+
+    expect(prepared.backend.args).toEqual([
+      "exec",
+      "--json",
+      "-c",
+      'mcp_servers={ nova-ai = { url = "http://127.0.0.1:23119/mcp", default_tools_approval_mode = "approve", bearer_token_env_var = "NOVA_AI_MCP_TOKEN", env_http_headers = { x-session-key = "NOVA_AI_MCP_SESSION_KEY" } } }',
+    ]);
+    expect(prepared.backend.resumeArgs).toEqual([
+      "exec",
+      "resume",
+      "{sessionId}",
+      "-c",
+      'mcp_servers={ nova-ai = { url = "http://127.0.0.1:23119/mcp", default_tools_approval_mode = "approve", bearer_token_env_var = "NOVA_AI_MCP_TOKEN", env_http_headers = { x-session-key = "NOVA_AI_MCP_SESSION_KEY" } } }',
+    ]);
+    expect(prepared.cleanup).toBeUndefined();
+  });
+});

@@ -1,0 +1,15 @@
+{
+  "name": "@nova-ai/duckduckgo-plugin",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI DuckDuckGo plugin",
+  "type": "module",
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

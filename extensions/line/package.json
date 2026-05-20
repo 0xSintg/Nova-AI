@@ -1,0 +1,59 @@
+{
+  "name": "@nova-ai/line",
+  "version": "2026.5.19",
+  "description": "Nova AI LINE channel plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "@line/bot-sdk": "11.0.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "setupEntry": "./setup-entry.ts",
+    "channel": {
+      "id": "line",
+      "label": "LINE",
+      "selectionLabel": "LINE (Messaging API)",
+      "detailLabel": "LINE Bot",
+      "docsPath": "/channels/line",
+      "docsLabel": "line",
+      "blurb": "LINE Messaging API webhook bot.",
+      "systemImage": "message",
+      "order": 75,
+      "quickstartAllowFrom": true
+    },
+    "install": {
+      "npmSpec": "@nova-ai/line",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.4.10"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

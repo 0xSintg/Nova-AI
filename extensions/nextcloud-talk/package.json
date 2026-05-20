@@ -1,0 +1,60 @@
+{
+  "name": "@nova-ai/nextcloud-talk",
+  "version": "2026.5.19",
+  "description": "Nova AI Nextcloud Talk channel plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "setupEntry": "./setup-entry.ts",
+    "channel": {
+      "id": "nextcloud-talk",
+      "label": "Nextcloud Talk",
+      "selectionLabel": "Nextcloud Talk (self-hosted)",
+      "docsPath": "/channels/nextcloud-talk",
+      "docsLabel": "nextcloud-talk",
+      "blurb": "Self-hosted chat via Nextcloud Talk webhook bots.",
+      "aliases": [
+        "nc-talk",
+        "nc"
+      ],
+      "order": 65,
+      "quickstartAllowFrom": true
+    },
+    "install": {
+      "npmSpec": "@nova-ai/nextcloud-talk",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.4.10"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  },
+  "dependencies": {
+    "zod": "4.4.3"
+  }
+}

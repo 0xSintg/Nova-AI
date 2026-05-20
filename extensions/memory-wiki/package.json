@@ -1,0 +1,29 @@
+{
+  "name": "@nova-ai/memory-wiki",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI persistent wiki plugin",
+  "type": "module",
+  "dependencies": {
+    "typebox": "1.1.38",
+    "yaml": "2.9.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

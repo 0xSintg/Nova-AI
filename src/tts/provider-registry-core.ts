@@ -1,0 +1,58 @@
+import type { Nova AIConfig } from "../config/types.js";
+import {
+  buildCapabilityProviderMaps,
+  normalizeCapabilityProviderId,
+} from "../plugins/provider-registry-shared.js";
+import type { SpeechProviderPlugin } from "../plugins/types.js";
+import type { SpeechProviderId } from "./provider-types.js";
+
+export type SpeechProviderRegistryResolver = {
+  getProvider: (providerId: string, cfg?: Nova AIConfig) => SpeechProviderPlugin | undefined;
+  listProviders: (cfg?: Nova AIConfig) => SpeechProviderPlugin[];
+};
+
+export function normalizeSpeechProviderId(
+  providerId: string | undefined,
+): SpeechProviderId | undefined {
+  return normalizeCapabilityProviderId(providerId);
+}
+
+export function createSpeechProviderRegistry(resolver: SpeechProviderRegistryResolver) {
+  const buildResolvedProviderMaps = (cfg?: Nova AIConfig) =>
+    buildCapabilityProviderMaps(resolver.listProviders(cfg));
+
+  const listProviders = (cfg?: Nova AIConfig): SpeechProviderPlugin[] => [
+    ...buildResolvedProviderMaps(cfg).canonical.values(),
+  ];
+
+  const getProvider = (
+    providerId: string | undefined,
+    cfg?: Nova AIConfig,
+  ): SpeechProviderPlugin | undefined => {
+    const normalized = normalizeSpeechProviderId(providerId);
+    if (!normalized) {
+      return undefined;
+    }
+    return (
+      resolver.getProvider(normalized, cfg) ??
+      buildResolvedProviderMaps(cfg).aliases.get(normalized)
+    );
+  };
+
+  const canonicalizeProviderId = (
+    providerId: string | undefined,
+    cfg?: Nova AIConfig,
+  ): SpeechProviderId | undefined => {
+    const normalized = normalizeSpeechProviderId(providerId);
+    if (!normalized) {
+      return undefined;
+    }
+    return getProvider(normalized, cfg)?.id ?? normalized;
+  };
+
+  return {
+    canonicalizeSpeechProviderId: canonicalizeProviderId,
+    getSpeechProvider: getProvider,
+    listSpeechProviders: listProviders,
+  };
+}

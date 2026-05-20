@@ -1,0 +1,75 @@
+{
+  "name": "@nova-ai/whatsapp",
+  "version": "2026.5.19",
+  "description": "Nova AI WhatsApp channel plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "audio-decode": "2.2.3",
+    "baileys": "7.0.0-rc11",
+    "https-proxy-agent": "9.0.0",
+    "jimp": "1.6.1",
+    "typebox": "1.1.38"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "setupEntry": "./setup-entry.ts",
+    "setupFeatures": {
+      "legacyStateMigrations": true,
+      "legacySessionSurfaces": true
+    },
+    "channel": {
+      "id": "whatsapp",
+      "label": "WhatsApp",
+      "selectionLabel": "WhatsApp (QR link)",
+      "detailLabel": "WhatsApp Web",
+      "docsPath": "/channels/whatsapp",
+      "docsLabel": "whatsapp",
+      "blurb": "works with your own number; recommend a separate phone + eSIM.",
+      "systemImage": "message",
+      "persistedAuthState": {
+        "specifier": "./auth-presence",
+        "exportName": "hasAnyWhatsAppAuth"
+      },
+      "cliAddOptions": [
+        {
+          "flags": "--auth-dir <path>",
+          "description": "WhatsApp auth directory override"
+        }
+      ]
+    },
+    "install": {
+      "clawhubSpec": "clawhub:@nova-ai/whatsapp",
+      "npmSpec": "@nova-ai/whatsapp",
+      "defaultChoice": "clawhub",
+      "minHostVersion": ">=2026.4.25"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

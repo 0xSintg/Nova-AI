@@ -1,0 +1,7 @@
+<resources>
+    <string-array name="ask_nova-ai_query_patterns">
+        <item>ask Nova AI $prompt</item>
+        <item>tell Nova AI to $prompt</item>
+        <item>open Nova AI and ask $prompt</item>
+    </string-array>
+</resources>

@@ -1,0 +1,47 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "nova-ai/extension-api": ["../src/extensionAPI.ts"],
+      "nova-ai/plugin-sdk": ["../dist/plugin-sdk/src/plugin-sdk/index.d.ts"],
+      "nova-ai/plugin-sdk/*": ["../dist/plugin-sdk/src/plugin-sdk/*.d.ts"],
+      "nova-ai/plugin-sdk/account-id": ["../dist/plugin-sdk/src/plugin-sdk/account-id.d.ts"],
+      "nova-ai/plugin-sdk/channel-entry-contract": [
+        "../packages/plugin-sdk/dist/src/plugin-sdk/channel-entry-contract.d.ts"
+      ],
+      "nova-ai/plugin-sdk/browser-maintenance": [
+        "../packages/plugin-sdk/dist/extensions/browser/browser-maintenance.d.ts"
+      ],
+      "nova-ai/plugin-sdk/channel-secret-basic-runtime": [
+        "../packages/plugin-sdk/dist/src/plugin-sdk/channel-secret-basic-runtime.d.ts"
+      ],
+      "nova-ai/plugin-sdk/channel-secret-runtime": [
+        "../dist/plugin-sdk/src/plugin-sdk/channel-secret-runtime.d.ts"
+      ],
+      "nova-ai/plugin-sdk/channel-secret-tts-runtime": [
+        "../packages/plugin-sdk/dist/src/plugin-sdk/channel-secret-tts-runtime.d.ts"
+      ],
+      "nova-ai/plugin-sdk/channel-streaming": [
+        "../dist/plugin-sdk/src/plugin-sdk/channel-streaming.d.ts"
+      ],
+      "nova-ai/plugin-sdk/error-runtime": ["../dist/plugin-sdk/src/plugin-sdk/error-runtime.d.ts"],
+      "nova-ai/plugin-sdk/provider-catalog-shared": [
+        "../packages/plugin-sdk/dist/src/plugin-sdk/provider-catalog-shared.d.ts"
+      ],
+      "nova-ai/plugin-sdk/provider-entry": [
+        "../packages/plugin-sdk/dist/src/plugin-sdk/provider-entry.d.ts"
+      ],
+      "nova-ai/plugin-sdk/secret-ref-runtime": [
+        "../dist/plugin-sdk/src/plugin-sdk/secret-ref-runtime.d.ts"
+      ],
+      "nova-ai/plugin-sdk/ssrf-runtime": ["../dist/plugin-sdk/src/plugin-sdk/ssrf-runtime.d.ts"],
+      "@nova-ai/qa-channel/api.js": ["../dist/plugin-sdk/extensions/qa-channel/api.d.ts"],
+      "@nova-ai/discord/api.js": ["../dist/plugin-sdk/extensions/discord/api.d.ts"],
+      "@nova-ai/slack/api.js": ["../dist/plugin-sdk/extensions/slack/api.d.ts"],
+      "@nova-ai/whatsapp/api.js": ["../dist/plugin-sdk/extensions/whatsapp/api.d.ts"],
+      "@nova-ai/*.js": ["../packages/plugin-sdk/dist/extensions/*.d.ts", "../extensions/*"],
+      "@nova-ai/*": ["../packages/plugin-sdk/dist/extensions/*", "../extensions/*"],
+      "@nova-ai/plugin-sdk/*": ["../dist/plugin-sdk/src/plugin-sdk/*.d.ts"]
+    }
+  }
+}

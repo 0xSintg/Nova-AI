@@ -1,0 +1,61 @@
+{
+  "name": "@nova-ai/feishu",
+  "version": "2026.5.19",
+  "description": "Nova AI Feishu/Lark channel plugin (community maintained by @m1heng)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "@larksuiteoapi/node-sdk": "1.64.0",
+    "typebox": "1.1.38",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "setupEntry": "./setup-entry.ts",
+    "channel": {
+      "id": "feishu",
+      "label": "Feishu",
+      "selectionLabel": "Feishu/Lark (飞书)",
+      "docsPath": "/channels/feishu",
+      "docsLabel": "feishu",
+      "blurb": "飞书/Lark enterprise messaging with doc/wiki/drive tools.",
+      "aliases": [
+        "lark"
+      ],
+      "order": 35,
+      "quickstartAllowFrom": true
+    },
+    "install": {
+      "npmSpec": "@nova-ai/feishu",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.4.25"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

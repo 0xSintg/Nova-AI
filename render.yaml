@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: nova-ai
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NOVA_AI_GATEWAY_PORT
+        value: "8080"
+      - key: NOVA_AI_STATE_DIR
+        value: /data/.nova-ai
+      - key: NOVA_AI_WORKSPACE_DIR
+        value: /data/workspace
+      - key: NOVA_AI_GATEWAY_TOKEN
+        generateValue: true
+    disk:
+      name: nova-ai-data
+      mountPath: /data
+      sizeGB: 1

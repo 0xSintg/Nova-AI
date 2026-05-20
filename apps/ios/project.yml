@@ -1,0 +1,361 @@
+name: Nova AI
+options:
+  bundleIdPrefix: ai.nova-ai
+  deploymentTarget:
+    iOS: "18.0"
+  xcodeVersion: "16.0"
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    ENABLE_APP_INTENTS_METADATA_GENERATION: NO
+
+packages:
+  Nova AIKit:
+    path: ../shared/Nova AIKit
+  Swabble:
+    path: ../swabble
+
+schemes:
+  Nova AI:
+    shared: true
+    build:
+      targets:
+        Nova AI: all
+    test:
+      targets:
+        - Nova AITests
+        - Nova AILogicTests
+  Nova AILogicTests:
+    shared: true
+    build:
+      targets:
+        Nova AILogicTests: all
+    test:
+      targets:
+        - Nova AILogicTests
+
+targets:
+  Nova AI:
+    type: application
+    platform: iOS
+    configFiles:
+      Debug: Signing.xcconfig
+      Release: Signing.xcconfig
+    sources:
+      - path: Sources
+    dependencies:
+      - target: Nova AIShareExtension
+        embed: true
+      - target: Nova AIActivityWidget
+        embed: true
+      - target: Nova AIWatchApp
+      - package: Nova AIKit
+      - package: Nova AIKit
+        product: Nova AIChatUI
+      - package: Nova AIKit
+        product: Nova AIProtocol
+      - package: Swabble
+        product: SwabbleKit
+      - sdk: AppIntents.framework
+    preBuildScripts:
+      - name: SwiftFormat (lint)
+        basedOnDependencyAnalysis: false
+        inputFileLists:
+          - $(SRCROOT)/SwiftSources.input.xcfilelist
+        script: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          if ! command -v swiftformat >/dev/null 2>&1; then
+            echo "error: swiftformat not found (brew install swiftformat)" >&2
+            exit 1
+          fi
+          swiftformat --lint --config "$SRCROOT/../../config/swiftformat" \
+            --unexclude "$SRCROOT/Sources,$SRCROOT/ShareExtension,$SRCROOT/ActivityWidget,$SRCROOT/WatchExtension,$SRCROOT/../shared/Nova AIKit,$SRCROOT/../swabble" \
+            --filelist "$SRCROOT/SwiftSources.input.xcfilelist"
+      - name: SwiftLint
+        basedOnDependencyAnalysis: false
+        inputFileLists:
+          - $(SRCROOT)/SwiftSources.input.xcfilelist
+        script: |
+          set -euo pipefail
+          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+          if ! command -v swiftlint >/dev/null 2>&1; then
+            echo "error: swiftlint not found (brew install swiftlint)" >&2
+            exit 1
+          fi
+          swiftlint lint --config "$SRCROOT/.swiftlint.yml" --use-script-input-file-lists
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_ENTITLEMENTS: Sources/Nova AI.entitlements
+        CODE_SIGN_STYLE: "$(NOVA_AI_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(NOVA_AI_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(NOVA_AI_APP_BUNDLE_ID)"
+        PROVISIONING_PROFILE_SPECIFIER: "$(NOVA_AI_APP_PROFILE)"
+        TARGETED_DEVICE_FAMILY: "1"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        SUPPORTS_LIVE_ACTIVITIES: YES
+        ENABLE_APPINTENTS_METADATA: NO
+        ENABLE_APP_INTENTS_METADATA_GENERATION: NO
+      configs:
+        Debug:
+          NOVA_AI_PUSH_TRANSPORT: direct
+          NOVA_AI_PUSH_DISTRIBUTION: local
+          NOVA_AI_PUSH_RELAY_BASE_URL: ""
+          NOVA_AI_PUSH_APNS_ENVIRONMENT: sandbox
+        Release:
+          NOVA_AI_PUSH_TRANSPORT: direct
+          NOVA_AI_PUSH_DISTRIBUTION: local
+          NOVA_AI_PUSH_RELAY_BASE_URL: ""
+          NOVA_AI_PUSH_APNS_ENVIRONMENT: production
+    info:
+      path: Sources/Info.plist
+      properties:
+        CFBundleDisplayName: Nova AI
+        CFBundleIconName: AppIcon
+        CFBundleURLTypes:
+          - CFBundleURLName: ai.nova-ai.ios
+            CFBundleURLSchemes:
+              - nova-ai
+        CFBundleShortVersionString: "$(NOVA_AI_MARKETING_VERSION)"
+        Nova AICanonicalVersion: "$(NOVA_AI_IOS_VERSION)"
+        CFBundleVersion: "$(NOVA_AI_BUILD_VERSION)"
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UIBackgroundModes:
+          - audio
+          - remote-notification
+        BGTaskSchedulerPermittedIdentifiers:
+          - ai.nova-ai.ios.bgrefresh
+        NSLocalNetworkUsageDescription: Nova AI discovers and connects to your Nova AI gateway on the local network.
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoadsInWebContent: true
+        NSBonjourServices:
+          - _nova-ai-gw._tcp
+        NSCameraUsageDescription: Nova AI can capture photos or short video clips when requested via the gateway.
+        NSCalendarsUsageDescription: Nova AI uses your calendars to show events and scheduling context when you enable calendar access.
+        NSCalendarsFullAccessUsageDescription: Nova AI uses your calendars to show events and scheduling context when you enable calendar access.
+        NSCalendarsWriteOnlyAccessUsageDescription: Nova AI uses your calendars to add events when you enable calendar access.
+        NSContactsUsageDescription: Nova AI uses your contacts so you can search and reference people while using the assistant.
+        NSLocationWhenInUseUsageDescription: Nova AI uses your location when you allow location sharing.
+        NSLocationAlwaysAndWhenInUseUsageDescription: Nova AI can share your location in the background when you enable Always.
+        NSMicrophoneUsageDescription: Nova AI needs microphone access for voice wake.
+        NSMotionUsageDescription: Nova AI may use motion data to support device-aware interactions and automations.
+        NSPhotoLibraryUsageDescription: Nova AI needs photo library access when you choose existing photos to share with your assistant.
+        NSRemindersFullAccessUsageDescription: Nova AI uses your reminders to list, add, and complete tasks when you enable reminders access.
+        NSSpeechRecognitionUsageDescription: Nova AI uses on-device speech recognition for voice wake.
+        NSSupportsLiveActivities: true
+        ITSAppUsesNonExemptEncryption: false
+        Nova AIPushTransport: "$(NOVA_AI_PUSH_TRANSPORT)"
+        Nova AIPushDistribution: "$(NOVA_AI_PUSH_DISTRIBUTION)"
+        Nova AIPushRelayBaseURL: "$(NOVA_AI_PUSH_RELAY_BASE_URL)"
+        Nova AIPushAPNsEnvironment: "$(NOVA_AI_PUSH_APNS_ENVIRONMENT)"
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+
+  Nova AIShareExtension:
+    type: app-extension
+    platform: iOS
+    configFiles:
+      Debug: Signing.xcconfig
+      Release: Signing.xcconfig
+    sources:
+      - path: ShareExtension
+    dependencies:
+      - package: Nova AIKit
+      - sdk: AppIntents.framework
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_STYLE: "$(NOVA_AI_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(NOVA_AI_DEVELOPMENT_TEAM)"
+        ENABLE_APPINTENTS_METADATA: NO
+        ENABLE_APP_INTENTS_METADATA_GENERATION: NO
+        PRODUCT_BUNDLE_IDENTIFIER: "$(NOVA_AI_SHARE_BUNDLE_ID)"
+        PROVISIONING_PROFILE_SPECIFIER: "$(NOVA_AI_SHARE_PROFILE)"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+    info:
+      path: ShareExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Nova AI Share
+        CFBundleShortVersionString: "$(NOVA_AI_MARKETING_VERSION)"
+        CFBundleVersion: "$(NOVA_AI_BUILD_VERSION)"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController"
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsText: true
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+              NSExtensionActivationSupportsImageWithMaxCount: 10
+              NSExtensionActivationSupportsMovieWithMaxCount: 1
+
+  Nova AIActivityWidget:
+    type: app-extension
+    platform: iOS
+    configFiles:
+      Debug: Signing.xcconfig
+      Release: Signing.xcconfig
+    sources:
+      - path: ActivityWidget
+      - path: Sources/LiveActivity/Nova AIActivityAttributes.swift
+    dependencies:
+      - sdk: WidgetKit.framework
+      - sdk: ActivityKit.framework
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_STYLE: "$(NOVA_AI_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(NOVA_AI_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(NOVA_AI_ACTIVITY_WIDGET_BUNDLE_ID)"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        SUPPORTS_LIVE_ACTIVITIES: YES
+    info:
+      path: ActivityWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Nova AI Activity
+        CFBundleShortVersionString: "$(NOVA_AI_MARKETING_VERSION)"
+        CFBundleVersion: "$(NOVA_AI_BUILD_VERSION)"
+        NSSupportsLiveActivities: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+
+  Nova AIWatchApp:
+    type: application.watchapp2
+    platform: watchOS
+    deploymentTarget: "11.0"
+    sources:
+      - path: WatchApp
+    dependencies:
+      - target: Nova AIWatchExtension
+    configFiles:
+      Debug: Config/Signing.xcconfig
+      Release: Config/Signing.xcconfig
+    attributes:
+      DevelopmentTeam: "$(NOVA_AI_DEVELOPMENT_TEAM)"
+      ProvisioningStyle: "$(NOVA_AI_CODE_SIGN_STYLE)"
+    settings:
+      base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_STYLE: "$(NOVA_AI_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(NOVA_AI_DEVELOPMENT_TEAM)"
+        ENABLE_APPINTENTS_METADATA: NO
+        ENABLE_APP_INTENTS_METADATA_GENERATION: NO
+        PRODUCT_BUNDLE_IDENTIFIER: "$(NOVA_AI_WATCH_APP_BUNDLE_ID)"
+        PROVISIONING_PROFILE_SPECIFIER: "$(NOVA_AI_WATCH_APP_PROFILE)"
+    info:
+      path: WatchApp/Info.plist
+      properties:
+        CFBundleDisplayName: Nova AI
+        CFBundleShortVersionString: "$(NOVA_AI_MARKETING_VERSION)"
+        CFBundleVersion: "$(NOVA_AI_BUILD_VERSION)"
+        WKCompanionAppBundleIdentifier: "$(NOVA_AI_APP_BUNDLE_ID)"
+        WKWatchKitApp: true
+
+  Nova AIWatchExtension:
+    type: watchkit2-extension
+    platform: watchOS
+    deploymentTarget: "11.0"
+    sources:
+      - path: WatchExtension/Sources
+    dependencies:
+      - sdk: AppIntents.framework
+      - sdk: WatchConnectivity.framework
+      - sdk: UserNotifications.framework
+    configFiles:
+      Debug: Config/Signing.xcconfig
+      Release: Config/Signing.xcconfig
+    attributes:
+      DevelopmentTeam: "$(NOVA_AI_DEVELOPMENT_TEAM)"
+      ProvisioningStyle: "$(NOVA_AI_CODE_SIGN_STYLE)"
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_STYLE: "$(NOVA_AI_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(NOVA_AI_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(NOVA_AI_WATCH_EXTENSION_BUNDLE_ID)"
+        PROVISIONING_PROFILE_SPECIFIER: "$(NOVA_AI_WATCH_EXTENSION_PROFILE)"
+    info:
+      path: WatchExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Nova AI
+        CFBundleShortVersionString: "$(NOVA_AI_MARKETING_VERSION)"
+        CFBundleVersion: "$(NOVA_AI_BUILD_VERSION)"
+        NSExtension:
+          NSExtensionAttributes:
+            WKAppBundleIdentifier: "$(NOVA_AI_WATCH_APP_BUNDLE_ID)"
+          NSExtensionPointIdentifier: com.apple.watchkit
+
+  Nova AITests:
+    type: bundle.unit-test
+    platform: iOS
+    configFiles:
+      Debug: Signing.xcconfig
+      Release: Signing.xcconfig
+    sources:
+      - path: Tests
+        excludes:
+          - Logic
+    dependencies:
+      - target: Nova AI
+      - package: Swabble
+        product: SwabbleKit
+      - sdk: AppIntents.framework
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_STYLE: "$(NOVA_AI_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(NOVA_AI_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: ai.nova-ai.ios.tests
+        ENABLE_APP_INTENTS_METADATA_GENERATION: NO
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Nova AI.app/Nova AI"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+    info:
+      path: Tests/Info.plist
+      properties:
+        CFBundleDisplayName: Nova AITests
+        CFBundleShortVersionString: "$(NOVA_AI_MARKETING_VERSION)"
+        CFBundleVersion: "$(NOVA_AI_BUILD_VERSION)"
+
+  Nova AILogicTests:
+    type: bundle.unit-test
+    platform: iOS
+    configFiles:
+      Debug: Signing.xcconfig
+      Release: Signing.xcconfig
+    sources:
+      - path: Tests/Logic
+    dependencies:
+      - package: Nova AIKit
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_STYLE: "$(NOVA_AI_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(NOVA_AI_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: ai.nova-ai.ios.logic-tests
+        ENABLE_APP_INTENTS_METADATA_GENERATION: NO
+        SWIFT_EMIT_CONST_VALUE_PROTOCOLS: ""
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+    info:
+      path: Tests/Info.plist
+      properties:
+        CFBundleDisplayName: Nova AILogicTests
+        CFBundleShortVersionString: "$(NOVA_AI_MARKETING_VERSION)"
+        CFBundleVersion: "$(NOVA_AI_BUILD_VERSION)"

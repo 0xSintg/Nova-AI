@@ -1,0 +1,192 @@
+{
+  "entries": [
+    {
+      "name": "@nova-ai/acpx",
+      "description": "Nova AI ACP runtime backend",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "acpx",
+          "label": "ACPX Runtime"
+        },
+        "install": {
+          "npmSpec": "@nova-ai/acpx",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.4.25"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/brave-plugin",
+      "description": "Nova AI Brave plugin",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "brave",
+          "label": "Brave"
+        },
+        "webSearchProviders": [
+          {
+            "id": "brave",
+            "label": "Brave Search",
+            "hint": "Brave Search web results.",
+            "onboardingScopes": ["text-inference"],
+            "credentialLabel": "Brave Search API key",
+            "envVars": ["BRAVE_API_KEY"],
+            "placeholder": "BSA...",
+            "signupUrl": "https://api-dashboard.search.brave.com/app/keys",
+            "docsUrl": "https://docs.nova-ai.com/tools/brave-search",
+            "credentialPath": "plugins.entries.brave.config.webSearch.apiKey",
+            "autoDetectOrder": 10
+          }
+        ],
+        "install": {
+          "npmSpec": "@nova-ai/brave-plugin",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.4.10",
+          "allowInvalidConfigRecovery": true
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/diagnostics-otel",
+      "description": "Nova AI diagnostics OpenTelemetry exporter",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "diagnostics-otel",
+          "label": "Diagnostics OpenTelemetry"
+        },
+        "install": {
+          "clawhubSpec": "clawhub:@nova-ai/diagnostics-otel",
+          "npmSpec": "@nova-ai/diagnostics-otel",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.4.25"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/diagnostics-prometheus",
+      "description": "Nova AI diagnostics Prometheus exporter",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "diagnostics-prometheus",
+          "label": "Diagnostics Prometheus"
+        },
+        "install": {
+          "clawhubSpec": "clawhub:@nova-ai/diagnostics-prometheus",
+          "npmSpec": "@nova-ai/diagnostics-prometheus",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.4.25"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/diffs",
+      "description": "Nova AI diff viewer plugin",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "diffs",
+          "label": "Diffs"
+        },
+        "install": {
+          "npmSpec": "@nova-ai/diffs",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.4.30"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/google-meet",
+      "description": "Nova AI Google Meet participant plugin",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "google-meet",
+          "label": "Google Meet"
+        },
+        "install": {
+          "npmSpec": "@nova-ai/google-meet",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.4.20"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/lobster",
+      "description": "Lobster workflow tool plugin (typed pipelines + resumable approvals)",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "lobster",
+          "label": "Lobster"
+        },
+        "install": {
+          "npmSpec": "@nova-ai/lobster",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.4.25"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/memory-lancedb",
+      "description": "Nova AI LanceDB-backed long-term memory plugin with auto-recall/capture",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "memory-lancedb",
+          "label": "Memory LanceDB"
+        },
+        "install": {
+          "npmSpec": "@nova-ai/memory-lancedb",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.4.10"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/openshell-sandbox",
+      "description": "Nova AI OpenShell sandbox backend",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "openshell",
+          "label": "OpenShell Sandbox"
+        },
+        "install": {
+          "npmSpec": "@nova-ai/openshell-sandbox",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.5.12-beta.1"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/voice-call",
+      "description": "Nova AI voice-call plugin",
+      "source": "official",
+      "kind": "plugin",
+      "nova-ai": {
+        "plugin": {
+          "id": "voice-call",
+          "label": "Voice Call"
+        },
+        "install": {
+          "npmSpec": "@nova-ai/voice-call",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.4.10"
+        }
+      }
+    }
+  ]
+}

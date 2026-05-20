@@ -1,0 +1,71 @@
+{
+  "name": "@nova-ai/msteams",
+  "version": "2026.5.19",
+  "description": "Nova AI Microsoft Teams channel plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nova-ai/nova-ai"
+  },
+  "type": "module",
+  "dependencies": {
+    "@azure/identity": "4.13.1",
+    "@microsoft/teams.api": "2.0.11",
+    "@microsoft/teams.apps": "2.0.11",
+    "express": "5.2.1",
+    "jsonwebtoken": "9.0.3",
+    "jwks-rsa": "4.0.1",
+    "typebox": "1.1.38"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "@types/jsonwebtoken": "9.0.10",
+    "nova-ai": "workspace:*"
+  },
+  "peerDependencies": {
+    "nova-ai": ">=2026.5.19"
+  },
+  "peerDependenciesMeta": {
+    "nova-ai": {
+      "optional": true
+    }
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "setupEntry": "./setup-entry.ts",
+    "channel": {
+      "id": "msteams",
+      "label": "Microsoft Teams",
+      "selectionLabel": "Microsoft Teams (Teams SDK)",
+      "docsPath": "/channels/msteams",
+      "docsLabel": "msteams",
+      "blurb": "Teams SDK; enterprise support.",
+      "aliases": [
+        "teams"
+      ],
+      "order": 60,
+      "doctorCapabilities": {
+        "dmAllowFromMode": "topOnly",
+        "groupModel": "hybrid",
+        "groupAllowFromFallbackToAllowFrom": true,
+        "warnOnEmptyGroupSenderAllowlist": true
+      }
+    },
+    "install": {
+      "npmSpec": "@nova-ai/msteams",
+      "defaultChoice": "npm",
+      "minHostVersion": ">=2026.4.10"
+    },
+    "compat": {
+      "pluginApi": ">=2026.5.19"
+    },
+    "build": {
+      "nova-aiVersion": "2026.5.19"
+    },
+    "release": {
+      "publishToClawHub": true,
+      "publishToNpm": true
+    }
+  }
+}

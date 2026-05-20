@@ -1,0 +1,19 @@
+{
+  "name": "@nova-ai/ollama-provider",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI Ollama provider plugin",
+  "type": "module",
+  "dependencies": {
+    "@earendil-works/pi-ai": "0.75.1",
+    "typebox": "1.1.38"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

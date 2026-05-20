@@ -1,0 +1,17 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <capability
+        android:name="custom.actions.intent.ASK_NOVA_AI"
+        app:queryPatterns="@array/ask_nova-ai_query_patterns">
+        <intent
+            android:action="ai.nova-ai.app.action.ASK_NOVA_AI"
+            android:targetPackage="ai.nova-ai.app"
+            android:targetClass="ai.nova-ai.app.MainActivity">
+            <parameter
+                android:name="prompt"
+                android:key="prompt"
+                android:mimeType="https://schema.org/Text"
+                android:required="true" />
+        </intent>
+    </capability>
+</shortcuts>

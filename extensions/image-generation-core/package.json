@@ -1,0 +1,10 @@
+{
+  "name": "@nova-ai/image-generation-core",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI image generation runtime package",
+  "type": "module",
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "entries": [
+    {
+      "name": "@nova-ai/amazon-bedrock-provider",
+      "description": "Nova AI Amazon Bedrock provider plugin",
+      "source": "official",
+      "kind": "provider",
+      "nova-ai": {
+        "plugin": {
+          "id": "amazon-bedrock",
+          "label": "Amazon Bedrock"
+        },
+        "providers": [
+          {
+            "id": "amazon-bedrock",
+            "name": "Amazon Bedrock",
+            "docs": "/providers/bedrock",
+            "categories": ["cloud", "llm"]
+          }
+        ],
+        "install": {
+          "npmSpec": "@nova-ai/amazon-bedrock-provider",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.5.12-beta.1"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/amazon-bedrock-mantle-provider",
+      "description": "Nova AI Amazon Bedrock Mantle provider plugin",
+      "source": "official",
+      "kind": "provider",
+      "nova-ai": {
+        "plugin": {
+          "id": "amazon-bedrock-mantle",
+          "label": "Amazon Bedrock Mantle"
+        },
+        "providers": [
+          {
+            "id": "amazon-bedrock-mantle",
+            "name": "Amazon Bedrock Mantle",
+            "docs": "/providers/bedrock-mantle",
+            "categories": ["cloud", "llm"]
+          }
+        ],
+        "install": {
+          "npmSpec": "@nova-ai/amazon-bedrock-mantle-provider",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.5.12-beta.1"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/anthropic-vertex-provider",
+      "description": "Nova AI Anthropic Vertex provider plugin",
+      "source": "official",
+      "kind": "provider",
+      "nova-ai": {
+        "plugin": {
+          "id": "anthropic-vertex",
+          "label": "Anthropic Vertex"
+        },
+        "providers": [
+          {
+            "id": "anthropic-vertex",
+            "name": "Anthropic Vertex",
+            "docs": "/providers/models",
+            "categories": ["cloud", "llm"]
+          }
+        ],
+        "install": {
+          "npmSpec": "@nova-ai/anthropic-vertex-provider",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.5.12-beta.1"
+        }
+      }
+    },
+    {
+      "name": "@nova-ai/codex",
+      "description": "Nova AI Codex harness and model provider plugin",
+      "source": "official",
+      "kind": "provider",
+      "nova-ai": {
+        "plugin": {
+          "id": "codex",
+          "label": "Codex"
+        },
+        "providers": [
+          {
+            "id": "codex",
+            "name": "Codex",
+            "docs": "/providers/models",
+            "categories": ["cloud", "llm"],
+            "authChoices": [
+              {
+                "method": "app-server",
+                "choiceId": "codex",
+                "choiceLabel": "Codex app-server",
+                "choiceHint": "Use the Codex app-server runtime and managed model catalog.",
+                "assistantPriority": -40,
+                "groupId": "codex",
+                "groupLabel": "Codex",
+                "groupHint": "Codex app-server model provider",
+                "onboardingScopes": ["text-inference"]
+              }
+            ]
+          }
+        ],
+        "install": {
+          "npmSpec": "@nova-ai/codex",
+          "defaultChoice": "npm",
+          "minHostVersion": ">=2026.5.1-beta.1"
+        }
+      }
+    }
+  ]
+}

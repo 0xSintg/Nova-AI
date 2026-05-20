@@ -1,0 +1,19 @@
+{
+  "name": "@nova-ai/openai-provider",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI OpenAI provider plugins",
+  "type": "module",
+  "dependencies": {
+    "@earendil-works/pi-ai": "0.75.1",
+    "ws": "8.20.1"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

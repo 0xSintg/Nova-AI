@@ -1,0 +1,56 @@
+import type { Nova AIConfig } from "nova-ai/plugin-sdk/plugin-entry";
+import { definePluginEntry } from "nova-ai/plugin-sdk/plugin-entry";
+import { normalizeOptionalLowercaseString } from "nova-ai/plugin-sdk/string-coerce-runtime";
+import { isRecord } from "./src/record-shared.js";
+
+function listContainsBrowser(value: unknown): boolean {
+  return (
+    Array.isArray(value) &&
+    value.some((entry) => normalizeOptionalLowercaseString(entry) === "browser")
+  );
+}
+
+function toolPolicyReferencesBrowser(value: unknown): boolean {
+  return (
+    isRecord(value) && (listContainsBrowser(value.allow) || listContainsBrowser(value.alsoAllow))
+  );
+}
+
+function hasBrowserToolReference(config: Nova AIConfig): boolean {
+  if (toolPolicyReferencesBrowser(config.tools)) {
+    return true;
+  }
+  const agentList = config.agents?.list;
+  return Array.isArray(agentList)
+    ? agentList.some((entry) => isRecord(entry) && toolPolicyReferencesBrowser(entry.tools))
+    : false;
+}
+
+export default definePluginEntry({
+  id: "browser",
+  name: "Browser Setup",
+  description: "Lightweight Browser setup hooks",
+  register(api) {
+    api.registerAutoEnableProbe(({ config }) => {
+      if (
+        config.browser?.enabled === false ||
+        config.plugins?.entries?.browser?.enabled === false
+      ) {
+        return null;
+      }
+      if (Object.prototype.hasOwnProperty.call(config, "browser")) {
+        return "browser configured";
+      }
+      if (
+        config.plugins?.entries &&
+        Object.prototype.hasOwnProperty.call(config.plugins.entries, "browser")
+      ) {
+        return "browser plugin configured";
+      }
+      if (hasBrowserToolReference(config)) {
+        return "browser tool referenced";
+      }
+      return null;
+    });
+  },
+});

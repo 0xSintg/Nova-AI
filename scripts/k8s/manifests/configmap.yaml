@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nova-ai-config
+  labels:
+    app: nova-ai
+data:
+  nova-ai.json: |
+    {
+      "gateway": {
+        "mode": "local",
+        "bind": "loopback",
+        "port": 18789,
+        "auth": {
+          "mode": "token"
+        },
+        "controlUi": {
+          "enabled": true
+        }
+      },
+      "agents": {
+        "defaults": {
+          "workspace": "~/.nova-ai/workspace"
+        },
+        "list": [
+          {
+            "id": "default",
+            "name": "Nova AI Assistant",
+            "workspace": "~/.nova-ai/workspace"
+          }
+        ]
+      },
+      "cron": { "enabled": false }
+    }
+  AGENTS.md: |
+    # Nova AI Assistant
+
+    You are a helpful AI assistant running in Kubernetes.

@@ -1,0 +1,23 @@
+---
+summary: "Adds the Twitch channel surface for sending and receiving Nova AI messages."
+read_when:
+  - You are installing, configuring, or auditing the twitch plugin
+title: "Twitch plugin"
+---
+
+# Twitch plugin
+
+Adds the Twitch channel surface for sending and receiving Nova AI messages.
+
+## Distribution
+
+- Package: `@nova-ai/twitch`
+- Install route: npm; ClawHub
+
+## Surface
+
+channels: twitch
+
+## Related docs
+
+- [twitch](/channels/twitch)

@@ -1,0 +1,24 @@
+{
+  "name": "@nova-ai/browser-plugin",
+  "version": "2026.5.19",
+  "private": true,
+  "description": "Nova AI browser tool plugin",
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "commander": "14.0.3",
+    "express": "5.2.1",
+    "playwright-core": "1.60.0",
+    "typebox": "1.1.38",
+    "ws": "8.20.1"
+  },
+  "devDependencies": {
+    "@nova-ai/plugin-sdk": "workspace:*",
+    "undici": "8.3.0"
+  },
+  "nova-ai": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}
