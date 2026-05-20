@@ -119,10 +119,21 @@ jobs:
       - name: Install Android SDK packages
         run: |
           set -euo pipefail
-          yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses >/dev/null 2>&1
-          sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --install \
-            "platform-tools"       \
-            "platforms;android-36" \
+          # Accept all licenses. `yes | sdkmanager --licenses` exits non-zero when the
+          # pipe breaks after sdkmanager stops reading, so we suppress that with `|| true`
+          # and then verify acceptance by checking the license hashes directory exists.
+          yes 2>/dev/null | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses >/dev/null || true
+
+          # Confirm licenses were actually written — sdkmanager writes a hash file per license.
+          license_dir="${ANDROID_SDK_ROOT}/licenses"
+          if [ ! -f "${license_dir}/android-sdk-license" ]; then
+            echo "ERROR: Android SDK license was not accepted. Aborting." >&2
+            exit 1
+          fi
+
+          sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" \
+            "platform-tools"        \
+            "platforms;android-36"  \
             "build-tools;36.0.0"
 
       # ── 5. Keystore (release only) ───────────────────────────────────────────
