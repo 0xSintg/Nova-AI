@@ -7,7 +7,7 @@ import ai.novaai.app.gateway.GatewaySession
 import ai.novaai.app.gateway.GatewayTlsProbeFailure
 import ai.novaai.app.gateway.GatewayTlsProbeResult
 import ai.novaai.app.node.InvokeDispatcher
-import ai.novaai.app.protocol.OpenClawTalkCommand
+import ai.novaai.app.protocol.NovaAITalkCommand
 import ai.novaai.app.voice.TalkModeManager
 import android.Manifest
 import kotlinx.coroutines.CompletableDeferred
@@ -125,7 +125,7 @@ class GatewayBootstrapAuthTest {
     val app = RuntimeEnvironment.getApplication()
     val securePrefs =
       app.getSharedPreferences(
-        "openclaw.node.secure.test.${UUID.randomUUID()}",
+        "novaai.node.secure.test.${UUID.randomUUID()}",
         android.content.Context.MODE_PRIVATE,
       )
     val prefs = SecurePrefs(app, securePrefsOverride = securePrefs)
@@ -154,7 +154,7 @@ class GatewayBootstrapAuthTest {
       val app = RuntimeEnvironment.getApplication()
       val securePrefs =
         app.getSharedPreferences(
-          "openclaw.node.secure.test.${UUID.randomUUID()}",
+          "novaai.node.secure.test.${UUID.randomUUID()}",
           android.content.Context.MODE_PRIVATE,
         )
       val prefs = SecurePrefs(app, securePrefsOverride = securePrefs)
@@ -192,7 +192,7 @@ class GatewayBootstrapAuthTest {
       val app = RuntimeEnvironment.getApplication()
       val securePrefs =
         app.getSharedPreferences(
-          "openclaw.node.secure.test.${UUID.randomUUID()}",
+          "novaai.node.secure.test.${UUID.randomUUID()}",
           android.content.Context.MODE_PRIVATE,
         )
       val prefs = SecurePrefs(app, securePrefsOverride = securePrefs)
@@ -235,7 +235,7 @@ class GatewayBootstrapAuthTest {
       val app = RuntimeEnvironment.getApplication()
       val securePrefs =
         app.getSharedPreferences(
-          "openclaw.node.secure.test.${UUID.randomUUID()}",
+          "novaai.node.secure.test.${UUID.randomUUID()}",
           android.content.Context.MODE_PRIVATE,
         )
       val prefs = SecurePrefs(app, securePrefsOverride = securePrefs)
@@ -296,7 +296,7 @@ class GatewayBootstrapAuthTest {
     val app = RuntimeEnvironment.getApplication()
     val securePrefs =
       app.getSharedPreferences(
-        "openclaw.node.secure.test.${UUID.randomUUID()}",
+        "novaai.node.secure.test.${UUID.randomUUID()}",
         android.content.Context.MODE_PRIVATE,
       )
     val prefs = SecurePrefs(app, securePrefsOverride = securePrefs)
@@ -326,7 +326,7 @@ class GatewayBootstrapAuthTest {
       val runtime = NodeRuntime(app)
       val dispatcher = readField<InvokeDispatcher>(runtime, "invokeDispatcher")
 
-      val result = dispatcher.handleInvoke(OpenClawTalkCommand.PttStart.rawValue, null)
+      val result = dispatcher.handleInvoke(NovaAITalkCommand.PttStart.rawValue, null)
 
       assertEquals("UNAVAILABLE", result.error?.code)
       assertEquals(VoiceCaptureMode.Off, runtime.voiceCaptureMode.value)

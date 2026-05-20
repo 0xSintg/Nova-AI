@@ -1,20 +1,20 @@
 package ai.novaai.app.node
 
-import ai.novaai.app.protocol.OpenClawCalendarCommand
-import ai.novaai.app.protocol.OpenClawCallLogCommand
-import ai.novaai.app.protocol.OpenClawCameraCommand
-import ai.novaai.app.protocol.OpenClawCanvasA2UICommand
-import ai.novaai.app.protocol.OpenClawCanvasCommand
-import ai.novaai.app.protocol.OpenClawCapability
-import ai.novaai.app.protocol.OpenClawContactsCommand
-import ai.novaai.app.protocol.OpenClawDeviceCommand
-import ai.novaai.app.protocol.OpenClawLocationCommand
-import ai.novaai.app.protocol.OpenClawMotionCommand
-import ai.novaai.app.protocol.OpenClawNotificationsCommand
-import ai.novaai.app.protocol.OpenClawPhotosCommand
-import ai.novaai.app.protocol.OpenClawSmsCommand
-import ai.novaai.app.protocol.OpenClawSystemCommand
-import ai.novaai.app.protocol.OpenClawTalkCommand
+import ai.novaai.app.protocol.NovaAICalendarCommand
+import ai.novaai.app.protocol.NovaAICallLogCommand
+import ai.novaai.app.protocol.NovaAICameraCommand
+import ai.novaai.app.protocol.NovaAICanvasA2UICommand
+import ai.novaai.app.protocol.NovaAICanvasCommand
+import ai.novaai.app.protocol.NovaAICapability
+import ai.novaai.app.protocol.NovaAIContactsCommand
+import ai.novaai.app.protocol.NovaAIDeviceCommand
+import ai.novaai.app.protocol.NovaAILocationCommand
+import ai.novaai.app.protocol.NovaAIMotionCommand
+import ai.novaai.app.protocol.NovaAINotificationsCommand
+import ai.novaai.app.protocol.NovaAIPhotosCommand
+import ai.novaai.app.protocol.NovaAISmsCommand
+import ai.novaai.app.protocol.NovaAISystemCommand
+import ai.novaai.app.protocol.NovaAITalkCommand
 
 data class NodeRuntimeFlags(
   val cameraEnabled: Boolean,
@@ -69,39 +69,39 @@ data class InvokeCommandSpec(
 object InvokeCommandRegistry {
   val capabilityManifest: List<NodeCapabilitySpec> =
     listOf(
-      NodeCapabilitySpec(name = OpenClawCapability.Canvas.rawValue),
-      NodeCapabilitySpec(name = OpenClawCapability.Device.rawValue),
-      NodeCapabilitySpec(name = OpenClawCapability.Notifications.rawValue),
-      NodeCapabilitySpec(name = OpenClawCapability.System.rawValue),
+      NodeCapabilitySpec(name = NovaAICapability.Canvas.rawValue),
+      NodeCapabilitySpec(name = NovaAICapability.Device.rawValue),
+      NodeCapabilitySpec(name = NovaAICapability.Notifications.rawValue),
+      NodeCapabilitySpec(name = NovaAICapability.System.rawValue),
       NodeCapabilitySpec(
-        name = OpenClawCapability.Camera.rawValue,
+        name = NovaAICapability.Camera.rawValue,
         availability = NodeCapabilityAvailability.CameraEnabled,
       ),
       NodeCapabilitySpec(
-        name = OpenClawCapability.Sms.rawValue,
+        name = NovaAICapability.Sms.rawValue,
         availability = NodeCapabilityAvailability.SmsAvailable,
       ),
       NodeCapabilitySpec(
-        name = OpenClawCapability.VoiceWake.rawValue,
+        name = NovaAICapability.VoiceWake.rawValue,
         availability = NodeCapabilityAvailability.VoiceWakeEnabled,
       ),
-      NodeCapabilitySpec(name = OpenClawCapability.Talk.rawValue),
+      NodeCapabilitySpec(name = NovaAICapability.Talk.rawValue),
       NodeCapabilitySpec(
-        name = OpenClawCapability.Location.rawValue,
+        name = NovaAICapability.Location.rawValue,
         availability = NodeCapabilityAvailability.LocationEnabled,
       ),
       NodeCapabilitySpec(
-        name = OpenClawCapability.Photos.rawValue,
+        name = NovaAICapability.Photos.rawValue,
         availability = NodeCapabilityAvailability.PhotosAvailable,
       ),
-      NodeCapabilitySpec(name = OpenClawCapability.Contacts.rawValue),
-      NodeCapabilitySpec(name = OpenClawCapability.Calendar.rawValue),
+      NodeCapabilitySpec(name = NovaAICapability.Contacts.rawValue),
+      NodeCapabilitySpec(name = NovaAICapability.Calendar.rawValue),
       NodeCapabilitySpec(
-        name = OpenClawCapability.Motion.rawValue,
+        name = NovaAICapability.Motion.rawValue,
         availability = NodeCapabilityAvailability.MotionAvailable,
       ),
       NodeCapabilitySpec(
-        name = OpenClawCapability.CallLog.rawValue,
+        name = NovaAICapability.CallLog.rawValue,
         availability = NodeCapabilityAvailability.CallLogAvailable,
       ),
     )
@@ -109,123 +109,123 @@ object InvokeCommandRegistry {
   val all: List<InvokeCommandSpec> =
     listOf(
       InvokeCommandSpec(
-        name = OpenClawCanvasCommand.Present.rawValue,
+        name = NovaAICanvasCommand.Present.rawValue,
         requiresForeground = true,
       ),
       InvokeCommandSpec(
-        name = OpenClawCanvasCommand.Hide.rawValue,
+        name = NovaAICanvasCommand.Hide.rawValue,
         requiresForeground = true,
       ),
       InvokeCommandSpec(
-        name = OpenClawCanvasCommand.Navigate.rawValue,
+        name = NovaAICanvasCommand.Navigate.rawValue,
         requiresForeground = true,
       ),
       InvokeCommandSpec(
-        name = OpenClawCanvasCommand.Eval.rawValue,
+        name = NovaAICanvasCommand.Eval.rawValue,
         requiresForeground = true,
       ),
       InvokeCommandSpec(
-        name = OpenClawCanvasCommand.Snapshot.rawValue,
+        name = NovaAICanvasCommand.Snapshot.rawValue,
         requiresForeground = true,
       ),
       InvokeCommandSpec(
-        name = OpenClawCanvasA2UICommand.Push.rawValue,
+        name = NovaAICanvasA2UICommand.Push.rawValue,
         requiresForeground = true,
       ),
       InvokeCommandSpec(
-        name = OpenClawCanvasA2UICommand.PushJSONL.rawValue,
+        name = NovaAICanvasA2UICommand.PushJSONL.rawValue,
         requiresForeground = true,
       ),
       InvokeCommandSpec(
-        name = OpenClawCanvasA2UICommand.Reset.rawValue,
+        name = NovaAICanvasA2UICommand.Reset.rawValue,
         requiresForeground = true,
       ),
       InvokeCommandSpec(
-        name = OpenClawSystemCommand.Notify.rawValue,
+        name = NovaAISystemCommand.Notify.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawTalkCommand.PttStart.rawValue,
+        name = NovaAITalkCommand.PttStart.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawTalkCommand.PttStop.rawValue,
+        name = NovaAITalkCommand.PttStop.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawTalkCommand.PttCancel.rawValue,
+        name = NovaAITalkCommand.PttCancel.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawTalkCommand.PttOnce.rawValue,
+        name = NovaAITalkCommand.PttOnce.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawCameraCommand.List.rawValue,
-        requiresForeground = true,
-        availability = InvokeCommandAvailability.CameraEnabled,
-      ),
-      InvokeCommandSpec(
-        name = OpenClawCameraCommand.Snap.rawValue,
+        name = NovaAICameraCommand.List.rawValue,
         requiresForeground = true,
         availability = InvokeCommandAvailability.CameraEnabled,
       ),
       InvokeCommandSpec(
-        name = OpenClawCameraCommand.Clip.rawValue,
+        name = NovaAICameraCommand.Snap.rawValue,
         requiresForeground = true,
         availability = InvokeCommandAvailability.CameraEnabled,
       ),
       InvokeCommandSpec(
-        name = OpenClawLocationCommand.Get.rawValue,
+        name = NovaAICameraCommand.Clip.rawValue,
+        requiresForeground = true,
+        availability = InvokeCommandAvailability.CameraEnabled,
+      ),
+      InvokeCommandSpec(
+        name = NovaAILocationCommand.Get.rawValue,
         availability = InvokeCommandAvailability.LocationEnabled,
       ),
       InvokeCommandSpec(
-        name = OpenClawDeviceCommand.Status.rawValue,
+        name = NovaAIDeviceCommand.Status.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawDeviceCommand.Info.rawValue,
+        name = NovaAIDeviceCommand.Info.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawDeviceCommand.Permissions.rawValue,
+        name = NovaAIDeviceCommand.Permissions.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawDeviceCommand.Health.rawValue,
+        name = NovaAIDeviceCommand.Health.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawNotificationsCommand.List.rawValue,
+        name = NovaAINotificationsCommand.List.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawNotificationsCommand.Actions.rawValue,
+        name = NovaAINotificationsCommand.Actions.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawPhotosCommand.Latest.rawValue,
+        name = NovaAIPhotosCommand.Latest.rawValue,
         availability = InvokeCommandAvailability.PhotosAvailable,
       ),
       InvokeCommandSpec(
-        name = OpenClawContactsCommand.Search.rawValue,
+        name = NovaAIContactsCommand.Search.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawContactsCommand.Add.rawValue,
+        name = NovaAIContactsCommand.Add.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawCalendarCommand.Events.rawValue,
+        name = NovaAICalendarCommand.Events.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawCalendarCommand.Add.rawValue,
+        name = NovaAICalendarCommand.Add.rawValue,
       ),
       InvokeCommandSpec(
-        name = OpenClawMotionCommand.Activity.rawValue,
+        name = NovaAIMotionCommand.Activity.rawValue,
         availability = InvokeCommandAvailability.MotionActivityAvailable,
       ),
       InvokeCommandSpec(
-        name = OpenClawMotionCommand.Pedometer.rawValue,
+        name = NovaAIMotionCommand.Pedometer.rawValue,
         availability = InvokeCommandAvailability.MotionPedometerAvailable,
       ),
       InvokeCommandSpec(
-        name = OpenClawSmsCommand.Send.rawValue,
+        name = NovaAISmsCommand.Send.rawValue,
         availability = InvokeCommandAvailability.SendSmsAvailable,
       ),
       InvokeCommandSpec(
-        name = OpenClawSmsCommand.Search.rawValue,
+        name = NovaAISmsCommand.Search.rawValue,
         availability = InvokeCommandAvailability.RequestableSmsSearchAvailable,
       ),
       InvokeCommandSpec(
-        name = OpenClawCallLogCommand.Search.rawValue,
+        name = NovaAICallLogCommand.Search.rawValue,
         availability = InvokeCommandAvailability.CallLogAvailable,
       ),
       InvokeCommandSpec(

@@ -199,7 +199,7 @@ private fun GatewayNodesDevicesSummary.isEmpty(): Boolean = nodes.isEmpty() && p
 
 private fun nodeSubtitle(node: GatewayNodeSummary): String {
   val kind = node.deviceFamily ?: "Node host"
-  val version = node.version?.let { "OpenClaw $it" }
+  val version = node.version?.let { "Nova AI $it" }
   val status = if (node.paired) "Paired" else "Unpaired"
   val commands =
     node.commands

@@ -210,7 +210,7 @@ private fun CronJobsSettingsScreen(
     }
   }
 
-  SettingsDetailFrame(title = "Cron Jobs", subtitle = "Scheduled OpenClaw work from your gateway.", icon = Icons.Default.Bolt, onBack = onBack) {
+  SettingsDetailFrame(title = "Cron Jobs", subtitle = "Scheduled Nova AI work from your gateway.", icon = Icons.Default.Bolt, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
@@ -237,7 +237,7 @@ private fun CronJobsSettingsScreen(
         ClawPanel {
           Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Text(text = "No scheduled jobs.", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-            Text(text = "Create recurring OpenClaw work from the desktop app.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+            Text(text = "Create recurring Nova AI work from the desktop app.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
           }
         }
       else -> CronJobsPanel(jobs = cronJobs)
@@ -305,7 +305,7 @@ private fun ApprovalsSettingsScreen(
       ClawPanel {
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
           Text(text = "Nothing needs approval.", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-          Text(text = "OpenClaw will show action requests here when a session pauses for review.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = "Nova AI will show action requests here when a session pauses for review.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       }
     } else {
@@ -320,9 +320,9 @@ private fun ProfileSettingsScreen(
   onBack: () -> Unit,
 ) {
   val displayName by viewModel.displayName.collectAsState()
-  var draft by remember(displayName) { mutableStateOf(displayName.ifBlank { "OpenClaw" }) }
+  var draft by remember(displayName) { mutableStateOf(displayName.ifBlank { "Nova AI" }) }
 
-  SettingsDetailFrame(title = "Profile", subtitle = "How this phone appears to OpenClaw.", icon = Icons.Default.Person, onBack = onBack) {
+  SettingsDetailFrame(title = "Profile", subtitle = "How this phone appears to Nova AI.", icon = Icons.Default.Person, onBack = onBack) {
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
         ClawTextField(value = draft, onValueChange = { draft = it }, placeholder = "Device name")
@@ -347,7 +347,7 @@ private fun VoiceSettingsScreen(
         voiceActive = micEnabled || talkModeEnabled,
       )
       Text(text = "Audio Test", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-      Text(text = "Check that OpenClaw can speak clearly on this phone.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+      Text(text = "Check that Nova AI can speak clearly on this phone.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
       SettingsWaveformPanel(active = speakerEnabled, onClick = ::playVoiceSetupTone)
       VoiceSetupActionRow(
         title = if (speakerEnabled) "Mute speaker" else "Enable speaker",
@@ -518,11 +518,11 @@ private fun NotificationSettingsScreen(
     listenerEnabled = DeviceNotificationListenerService.isAccessEnabled(context)
   }
 
-  SettingsDetailFrame(title = "Notifications", subtitle = "Choose what reaches OpenClaw.", icon = Icons.Default.Notifications, onBack = onBack) {
+  SettingsDetailFrame(title = "Notifications", subtitle = "Choose what reaches Nova AI.", icon = Icons.Default.Notifications, onBack = onBack) {
     SettingsTogglePanel(
       rows =
         listOf(
-          SettingsToggleRow("Forward Notifications", if (enabled) "OpenClaw can receive selected alerts." else "Alerts stay on this phone.", Icons.Default.Notifications, enabled, ::setForwarding),
+          SettingsToggleRow("Forward Notifications", if (enabled) "Nova AI can receive selected alerts." else "Alerts stay on this phone.", Icons.Default.Notifications, enabled, ::setForwarding),
           SettingsToggleRow("Quiet Hours", "$quietStart to $quietEnd", Icons.Default.Bolt, quietEnabled) { checked ->
             viewModel.setNotificationForwardingQuietHours(enabled = checked, start = quietStart, end = quietEnd)
           },
@@ -668,7 +668,7 @@ private fun GatewaySettingsScreen(
   var passwordInput by remember { mutableStateOf("") }
   var validationText by remember { mutableStateOf<String?>(null) }
 
-  SettingsDetailFrame(title = "Gateway", subtitle = "Connection between this phone and OpenClaw.", icon = Icons.Default.Cloud, onBack = onBack) {
+  SettingsDetailFrame(title = "Gateway", subtitle = "Connection between this phone and Nova AI.", icon = Icons.Default.Cloud, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
@@ -760,7 +760,7 @@ private fun GatewaySettingsScreen(
 
 @Composable
 private fun AppearanceSettingsScreen(onBack: () -> Unit) {
-  SettingsDetailFrame(title = "Appearance", subtitle = "A calm, high-contrast OpenClaw interface.", icon = Icons.Default.Palette, onBack = onBack) {
+  SettingsDetailFrame(title = "Appearance", subtitle = "A calm, high-contrast Nova AI interface.", icon = Icons.Default.Palette, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
@@ -770,7 +770,7 @@ private fun AppearanceSettingsScreen(onBack: () -> Unit) {
         ),
     )
     ClawPanel {
-      Text(text = "OpenClaw uses a fixed premium dark theme so it stays consistent across devices.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+      Text(text = "Nova AI uses a fixed premium dark theme so it stays consistent across devices.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
     }
   }
 }
@@ -787,7 +787,7 @@ private fun AboutSettingsScreen(
   val latestVersion = updateAvailable?.latestVersion?.takeIf { it.isNotBlank() }
   val currentGatewayVersion = updateAvailable?.currentVersion?.takeIf { it.isNotBlank() } ?: gatewayVersion
 
-  SettingsDetailFrame(title = "About", subtitle = "OpenClaw for Android.", icon = Icons.Default.Info, onBack = onBack) {
+  SettingsDetailFrame(title = "About", subtitle = "Nova AI for Android.", icon = Icons.Default.Info, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
@@ -837,7 +837,7 @@ private fun AboutStatusRow(
 
 private fun aboutUpdateText(latestVersion: String?): String =
   if (latestVersion == null) {
-    "OpenClaw turns this phone into a clean mobile command surface for sessions, voice, providers, and Gateway."
+    "Nova AI turns this phone into a clean mobile command surface for sessions, voice, providers, and Gateway."
   } else {
     "A Gateway update is available. Run the update from the Web UI or CLI when you are ready."
   }

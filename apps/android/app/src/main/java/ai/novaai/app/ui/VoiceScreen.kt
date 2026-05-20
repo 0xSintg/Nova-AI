@@ -377,7 +377,7 @@ private fun TalkSessionScreen(
           Text(
             text =
               if (speaking) {
-                "OpenClaw speaking"
+                "Nova AI speaking"
               } else if (listening) {
                 "Realtime voice"
               } else {
@@ -427,12 +427,12 @@ private fun TalkTranscript(
   LazyColumn(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(7.dp)) {
     if (entries.isEmpty()) {
       item {
-        TalkTranscriptCard(label = "OpenClaw", text = "Listening for your next turn.", muted = true)
+        TalkTranscriptCard(label = "Nova AI", text = "Listening for your next turn.", muted = true)
       }
     } else {
       items(entries.takeLast(6), key = { it.id }) { entry ->
         TalkTranscriptCard(
-          label = if (entry.role == VoiceConversationRole.User) "You" else "OpenClaw",
+          label = if (entry.role == VoiceConversationRole.User) "You" else "Nova AI",
           text = if (entry.isStreaming && entry.text.isBlank()) "Listening response..." else entry.text,
           muted = entry.isStreaming,
         )
@@ -603,7 +603,7 @@ private fun VoiceHero(
       Text(
         text =
           when {
-            talkModeSpeaking -> "OpenClaw is replying"
+            talkModeSpeaking -> "Nova AI is replying"
             talkModeListening -> "Listening"
             talkModeEnabled -> "Talk is live"
             micEnabled -> "Dictation is listening"
@@ -841,7 +841,7 @@ private fun VoiceTranscript(
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
               Text(text = "No transcript yet", style = ClawTheme.type.section, color = ClawTheme.colors.text)
               Text(
-                text = "Your words and OpenClaw replies will appear here.",
+                text = "Your words and Nova AI replies will appear here.",
                 style = ClawTheme.type.body,
                 color = ClawTheme.colors.textMuted,
               )
@@ -866,7 +866,7 @@ private fun VoiceTurnCard(entry: VoiceConversationEntry) {
     ) {
       Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
         Text(
-          text = if (isUser) "You" else "OpenClaw",
+          text = if (isUser) "You" else "Nova AI",
           style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp, fontWeight = FontWeight.SemiBold),
           color = ClawTheme.colors.textSubtle,
         )
@@ -885,7 +885,7 @@ private fun VoiceThinkingCard() {
   ClawPanel {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
       ClawStatusPill(text = "Sending", status = ClawStatus.Warning)
-      Text(text = "OpenClaw is preparing a response.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+      Text(text = "Nova AI is preparing a response.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
     }
   }
 }
@@ -897,7 +897,7 @@ private fun VoicePermissionPanel(onRequestPermission: () -> Unit) {
       ClawStatusPill(text = "Permission needed", status = ClawStatus.Warning)
       Text(text = "Microphone access is needed.", style = ClawTheme.type.section, color = ClawTheme.colors.text)
       Text(
-        text = "OpenClaw only listens when you start Talk or Dictation.",
+        text = "Nova AI only listens when you start Talk or Dictation.",
         style = ClawTheme.type.body,
         color = ClawTheme.colors.textMuted,
       )
@@ -934,7 +934,7 @@ private fun voiceStatusLabel(
   talkModeSpeaking: Boolean,
 ): String =
   when {
-    voiceCaptureMode == VoiceCaptureMode.TalkMode && talkModeSpeaking -> "OpenClaw is speaking"
+    voiceCaptureMode == VoiceCaptureMode.TalkMode && talkModeSpeaking -> "Nova AI is speaking"
     voiceCaptureMode == VoiceCaptureMode.TalkMode && talkModeListening -> "Listening"
     voiceCaptureMode == VoiceCaptureMode.TalkMode -> "Talk is live"
     micIsSending -> "Sending dictation"

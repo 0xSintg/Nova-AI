@@ -7,7 +7,7 @@ import android.content.Context
 import android.os.Build
 import android.widget.Toast
 
-internal fun openClawAndroidVersionLabel(): String {
+internal fun novaAIAndroidVersionLabel(): String {
   val versionName = BuildConfig.VERSION_NAME.trim().ifEmpty { "dev" }
   return if (BuildConfig.DEBUG && !versionName.contains("dev", ignoreCase = true)) {
     "$versionName-dev"
@@ -46,20 +46,20 @@ internal fun buildGatewayDiagnosticsReport(
   val endpoint = gatewayAddress.trim().ifEmpty { "unknown" }
   val status = gatewayStatusForDisplay(statusText)
   return """
-    Help diagnose this OpenClaw Android gateway connection failure.
+    Help diagnose this Nova AI Android gateway connection failure.
 
     Please:
     - pick one route only: same machine, same LAN, Tailscale, or public URL
     - classify this as pairing/auth, TLS trust, wrong advertised route, wrong address/port, or gateway down
     - remember: Tailscale/public mobile routes require wss:// or Tailscale Serve; ws:// is loopback-only
     - quote the exact app status/error below
-    - tell me whether `openclaw devices list` should show a pending pairing request
-    - if more signal is needed, ask for `openclaw qr --json`, `openclaw devices list`, and `openclaw nodes status`
+    - tell me whether `nova-ai devices list` should show a pending pairing request
+    - if more signal is needed, ask for `nova-ai qr --json`, `nova-ai devices list`, and `nova-ai nodes status`
     - give the next exact command or tap
 
     Debug info:
     - screen: $screen
-    - app version: ${openClawAndroidVersionLabel()}
+    - app version: ${novaAIAndroidVersionLabel()}
     - device: $device
     - android: $androidVersion (SDK ${Build.VERSION.SDK_INT})
     - gateway address: $endpoint
@@ -75,6 +75,6 @@ internal fun copyGatewayDiagnosticsReport(
 ) {
   val clipboard = context.getSystemService(ClipboardManager::class.java) ?: return
   val report = buildGatewayDiagnosticsReport(screen = screen, gatewayAddress = gatewayAddress, statusText = statusText)
-  clipboard.setPrimaryClip(ClipData.newPlainText("OpenClaw gateway diagnostics", report))
+  clipboard.setPrimaryClip(ClipData.newPlainText("Nova AI gateway diagnostics", report))
   Toast.makeText(context, "Copied gateway diagnostics", Toast.LENGTH_SHORT).show()
 }

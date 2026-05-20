@@ -122,12 +122,12 @@ class CanvasController {
     withWebViewOnMain { wv ->
       if (currentUrl == null) {
         if (BuildConfig.DEBUG) {
-          Log.d("OpenClawCanvas", "load scaffold: $scaffoldAssetUrl")
+          Log.d("NovaAICanvas", "load scaffold: $scaffoldAssetUrl")
         }
         wv.loadUrl(scaffoldAssetUrl)
       } else {
         if (BuildConfig.DEBUG) {
-          Log.d("OpenClawCanvas", "load url: $currentUrl")
+          Log.d("NovaAICanvas", "load url: $currentUrl")
         }
         wv.loadUrl(currentUrl)
       }
@@ -145,7 +145,7 @@ class CanvasController {
         """
         (() => {
           try {
-            const api = globalThis.__openclaw;
+            const api = globalThis.__novaai;
             if (!api) return;
             if (typeof api.setDebugStatusEnabled === 'function') {
               api.setDebugStatusEnabled(${if (enabled) "true" else "false"});
@@ -168,7 +168,7 @@ class CanvasController {
         """
         (() => {
           try {
-            const api = globalThis.__openclaw;
+            const api = globalThis.__novaai;
             if (!api || typeof api.renderHome !== 'function') return;
             api.renderHome($payload);
           } catch (_) {}

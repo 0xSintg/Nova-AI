@@ -1,18 +1,18 @@
 package ai.novaai.app.node
 
-import ai.novaai.app.protocol.OpenClawCalendarCommand
-import ai.novaai.app.protocol.OpenClawCallLogCommand
-import ai.novaai.app.protocol.OpenClawCameraCommand
-import ai.novaai.app.protocol.OpenClawCapability
-import ai.novaai.app.protocol.OpenClawContactsCommand
-import ai.novaai.app.protocol.OpenClawDeviceCommand
-import ai.novaai.app.protocol.OpenClawLocationCommand
-import ai.novaai.app.protocol.OpenClawMotionCommand
-import ai.novaai.app.protocol.OpenClawNotificationsCommand
-import ai.novaai.app.protocol.OpenClawPhotosCommand
-import ai.novaai.app.protocol.OpenClawSmsCommand
-import ai.novaai.app.protocol.OpenClawSystemCommand
-import ai.novaai.app.protocol.OpenClawTalkCommand
+import ai.novaai.app.protocol.NovaAICalendarCommand
+import ai.novaai.app.protocol.NovaAICallLogCommand
+import ai.novaai.app.protocol.NovaAICameraCommand
+import ai.novaai.app.protocol.NovaAICapability
+import ai.novaai.app.protocol.NovaAIContactsCommand
+import ai.novaai.app.protocol.NovaAIDeviceCommand
+import ai.novaai.app.protocol.NovaAILocationCommand
+import ai.novaai.app.protocol.NovaAIMotionCommand
+import ai.novaai.app.protocol.NovaAINotificationsCommand
+import ai.novaai.app.protocol.NovaAIPhotosCommand
+import ai.novaai.app.protocol.NovaAISmsCommand
+import ai.novaai.app.protocol.NovaAISystemCommand
+import ai.novaai.app.protocol.NovaAITalkCommand
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -23,57 +23,57 @@ import org.junit.Test
 class InvokeCommandRegistryTest {
   private val coreCapabilities =
     setOf(
-      OpenClawCapability.Canvas.rawValue,
-      OpenClawCapability.Device.rawValue,
-      OpenClawCapability.Notifications.rawValue,
-      OpenClawCapability.System.rawValue,
-      OpenClawCapability.Talk.rawValue,
-      OpenClawCapability.Contacts.rawValue,
-      OpenClawCapability.Calendar.rawValue,
+      NovaAICapability.Canvas.rawValue,
+      NovaAICapability.Device.rawValue,
+      NovaAICapability.Notifications.rawValue,
+      NovaAICapability.System.rawValue,
+      NovaAICapability.Talk.rawValue,
+      NovaAICapability.Contacts.rawValue,
+      NovaAICapability.Calendar.rawValue,
     )
 
   private val optionalCapabilities =
     setOf(
-      OpenClawCapability.Camera.rawValue,
-      OpenClawCapability.Location.rawValue,
-      OpenClawCapability.Sms.rawValue,
-      OpenClawCapability.CallLog.rawValue,
-      OpenClawCapability.VoiceWake.rawValue,
-      OpenClawCapability.Motion.rawValue,
-      OpenClawCapability.Photos.rawValue,
+      NovaAICapability.Camera.rawValue,
+      NovaAICapability.Location.rawValue,
+      NovaAICapability.Sms.rawValue,
+      NovaAICapability.CallLog.rawValue,
+      NovaAICapability.VoiceWake.rawValue,
+      NovaAICapability.Motion.rawValue,
+      NovaAICapability.Photos.rawValue,
     )
 
   private val coreCommands =
     setOf(
-      OpenClawDeviceCommand.Status.rawValue,
-      OpenClawDeviceCommand.Info.rawValue,
-      OpenClawDeviceCommand.Permissions.rawValue,
-      OpenClawDeviceCommand.Health.rawValue,
-      OpenClawNotificationsCommand.List.rawValue,
-      OpenClawNotificationsCommand.Actions.rawValue,
-      OpenClawSystemCommand.Notify.rawValue,
-      OpenClawTalkCommand.PttStart.rawValue,
-      OpenClawTalkCommand.PttStop.rawValue,
-      OpenClawTalkCommand.PttCancel.rawValue,
-      OpenClawTalkCommand.PttOnce.rawValue,
-      OpenClawContactsCommand.Search.rawValue,
-      OpenClawContactsCommand.Add.rawValue,
-      OpenClawCalendarCommand.Events.rawValue,
-      OpenClawCalendarCommand.Add.rawValue,
+      NovaAIDeviceCommand.Status.rawValue,
+      NovaAIDeviceCommand.Info.rawValue,
+      NovaAIDeviceCommand.Permissions.rawValue,
+      NovaAIDeviceCommand.Health.rawValue,
+      NovaAINotificationsCommand.List.rawValue,
+      NovaAINotificationsCommand.Actions.rawValue,
+      NovaAISystemCommand.Notify.rawValue,
+      NovaAITalkCommand.PttStart.rawValue,
+      NovaAITalkCommand.PttStop.rawValue,
+      NovaAITalkCommand.PttCancel.rawValue,
+      NovaAITalkCommand.PttOnce.rawValue,
+      NovaAIContactsCommand.Search.rawValue,
+      NovaAIContactsCommand.Add.rawValue,
+      NovaAICalendarCommand.Events.rawValue,
+      NovaAICalendarCommand.Add.rawValue,
     )
 
   private val optionalCommands =
     setOf(
-      OpenClawCameraCommand.Snap.rawValue,
-      OpenClawCameraCommand.Clip.rawValue,
-      OpenClawCameraCommand.List.rawValue,
-      OpenClawLocationCommand.Get.rawValue,
-      OpenClawMotionCommand.Activity.rawValue,
-      OpenClawMotionCommand.Pedometer.rawValue,
-      OpenClawSmsCommand.Send.rawValue,
-      OpenClawSmsCommand.Search.rawValue,
-      OpenClawCallLogCommand.Search.rawValue,
-      OpenClawPhotosCommand.Latest.rawValue,
+      NovaAICameraCommand.Snap.rawValue,
+      NovaAICameraCommand.Clip.rawValue,
+      NovaAICameraCommand.List.rawValue,
+      NovaAILocationCommand.Get.rawValue,
+      NovaAIMotionCommand.Activity.rawValue,
+      NovaAIMotionCommand.Pedometer.rawValue,
+      NovaAISmsCommand.Send.rawValue,
+      NovaAISmsCommand.Search.rawValue,
+      NovaAICallLogCommand.Search.rawValue,
+      NovaAIPhotosCommand.Latest.rawValue,
     )
 
   private val debugCommands = setOf("debug.logs", "debug.ed25519")
@@ -155,8 +155,8 @@ class InvokeCommandRegistryTest {
         ),
       )
 
-    assertTrue(commands.contains(OpenClawMotionCommand.Activity.rawValue))
-    assertFalse(commands.contains(OpenClawMotionCommand.Pedometer.rawValue))
+    assertTrue(commands.contains(NovaAIMotionCommand.Activity.rawValue))
+    assertFalse(commands.contains(NovaAIMotionCommand.Pedometer.rawValue))
   }
 
   @Test
@@ -174,11 +174,11 @@ class InvokeCommandRegistryTest {
         defaultFlags(smsSearchPossible = true),
       )
 
-    assertTrue(readOnlyCommands.contains(OpenClawSmsCommand.Search.rawValue))
-    assertFalse(readOnlyCommands.contains(OpenClawSmsCommand.Send.rawValue))
-    assertTrue(sendOnlyCommands.contains(OpenClawSmsCommand.Send.rawValue))
-    assertFalse(sendOnlyCommands.contains(OpenClawSmsCommand.Search.rawValue))
-    assertTrue(requestableSearchCommands.contains(OpenClawSmsCommand.Search.rawValue))
+    assertTrue(readOnlyCommands.contains(NovaAISmsCommand.Search.rawValue))
+    assertFalse(readOnlyCommands.contains(NovaAISmsCommand.Send.rawValue))
+    assertTrue(sendOnlyCommands.contains(NovaAISmsCommand.Send.rawValue))
+    assertFalse(sendOnlyCommands.contains(NovaAISmsCommand.Search.rawValue))
+    assertTrue(requestableSearchCommands.contains(NovaAISmsCommand.Search.rawValue))
   }
 
   @Test
@@ -196,23 +196,23 @@ class InvokeCommandRegistryTest {
         defaultFlags(smsSearchPossible = true),
       )
 
-    assertTrue(readOnlyCapabilities.contains(OpenClawCapability.Sms.rawValue))
-    assertTrue(sendOnlyCapabilities.contains(OpenClawCapability.Sms.rawValue))
-    assertFalse(requestableSearchCapabilities.contains(OpenClawCapability.Sms.rawValue))
+    assertTrue(readOnlyCapabilities.contains(NovaAICapability.Sms.rawValue))
+    assertTrue(sendOnlyCapabilities.contains(NovaAICapability.Sms.rawValue))
+    assertFalse(requestableSearchCapabilities.contains(NovaAICapability.Sms.rawValue))
   }
 
   @Test
   fun advertisedCommands_excludesCallLogWhenUnavailable() {
     val commands = InvokeCommandRegistry.advertisedCommands(defaultFlags(callLogAvailable = false))
 
-    assertFalse(commands.contains(OpenClawCallLogCommand.Search.rawValue))
+    assertFalse(commands.contains(NovaAICallLogCommand.Search.rawValue))
   }
 
   @Test
   fun advertisedCapabilities_excludesCallLogWhenUnavailable() {
     val capabilities = InvokeCommandRegistry.advertisedCapabilities(defaultFlags(callLogAvailable = false))
 
-    assertFalse(capabilities.contains(OpenClawCapability.CallLog.rawValue))
+    assertFalse(capabilities.contains(NovaAICapability.CallLog.rawValue))
   }
 
   @Test
@@ -220,10 +220,10 @@ class InvokeCommandRegistryTest {
     val disabledFlags = defaultFlags(photosAvailable = false)
     val enabledFlags = defaultFlags(photosAvailable = true)
 
-    assertFalse(InvokeCommandRegistry.advertisedCapabilities(disabledFlags).contains(OpenClawCapability.Photos.rawValue))
-    assertFalse(InvokeCommandRegistry.advertisedCommands(disabledFlags).contains(OpenClawPhotosCommand.Latest.rawValue))
-    assertTrue(InvokeCommandRegistry.advertisedCapabilities(enabledFlags).contains(OpenClawCapability.Photos.rawValue))
-    assertTrue(InvokeCommandRegistry.advertisedCommands(enabledFlags).contains(OpenClawPhotosCommand.Latest.rawValue))
+    assertFalse(InvokeCommandRegistry.advertisedCapabilities(disabledFlags).contains(NovaAICapability.Photos.rawValue))
+    assertFalse(InvokeCommandRegistry.advertisedCommands(disabledFlags).contains(NovaAIPhotosCommand.Latest.rawValue))
+    assertTrue(InvokeCommandRegistry.advertisedCapabilities(enabledFlags).contains(NovaAICapability.Photos.rawValue))
+    assertTrue(InvokeCommandRegistry.advertisedCommands(enabledFlags).contains(NovaAIPhotosCommand.Latest.rawValue))
   }
 
   @Test
@@ -231,14 +231,14 @@ class InvokeCommandRegistryTest {
     val capabilities = InvokeCommandRegistry.advertisedCapabilities(defaultFlags(voiceWakeEnabled = true))
     val commands = InvokeCommandRegistry.advertisedCommands(defaultFlags(voiceWakeEnabled = true))
 
-    assertTrue(capabilities.contains(OpenClawCapability.VoiceWake.rawValue))
+    assertTrue(capabilities.contains(NovaAICapability.VoiceWake.rawValue))
     assertFalse(commands.any { it.contains("voice", ignoreCase = true) })
   }
 
   @Test
   fun find_returnsForegroundMetadataForCameraCommands() {
-    val list = InvokeCommandRegistry.find(OpenClawCameraCommand.List.rawValue)
-    val location = InvokeCommandRegistry.find(OpenClawLocationCommand.Get.rawValue)
+    val list = InvokeCommandRegistry.find(NovaAICameraCommand.List.rawValue)
+    val location = InvokeCommandRegistry.find(NovaAILocationCommand.Get.rawValue)
 
     assertNotNull(list)
     assertEquals(true, list?.requiresForeground)

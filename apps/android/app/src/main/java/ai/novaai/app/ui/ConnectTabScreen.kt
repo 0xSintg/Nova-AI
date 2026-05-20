@@ -338,14 +338,14 @@ fun ConnectTabScreen(viewModel: MainViewModel) {
           Text(statusLabel, style = mobileBody.copy(fontFamily = FontFamily.Monospace), color = mobileText)
           if (pairingRequired) {
             Text(
-              "Approve this phone on the gateway. OpenClaw retries automatically while this screen stays open.",
+              "Approve this phone on the gateway. Nova AI retries automatically while this screen stays open.",
               style = mobileCallout,
               color = mobileTextSecondary,
             )
-            CommandBlock("openclaw devices list")
-            CommandBlock("openclaw devices approve <requestId>")
+            CommandBlock("nova-ai devices list")
+            CommandBlock("nova-ai devices approve <requestId>")
           }
-          Text("OpenClaw Android ${openClawAndroidVersionLabel()}", style = mobileCaption1, color = mobileTextSecondary)
+          Text("Nova AI Android ${novaAIAndroidVersionLabel()}", style = mobileCaption1, color = mobileTextSecondary)
           Button(
             onClick = {
               copyGatewayDiagnosticsReport(
@@ -422,8 +422,8 @@ fun ConnectTabScreen(viewModel: MainViewModel) {
           }
 
           Text("Run these on the gateway host:", style = mobileCallout, color = mobileTextSecondary)
-          CommandBlock("openclaw qr --setup-code-only")
-          CommandBlock("openclaw qr --json")
+          CommandBlock("nova-ai qr --setup-code-only")
+          CommandBlock("nova-ai qr --json")
           Text(
             "For Tailscale or public hosts, use wss:// or Tailscale Serve. Private LAN ws:// remains supported.",
             style = mobileCaption1,

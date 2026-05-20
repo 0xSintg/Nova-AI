@@ -6,13 +6,13 @@ import ai.novaai.app.VoiceWakeMode
 import ai.novaai.app.gateway.GatewayEndpoint
 import ai.novaai.app.gateway.isLoopbackGatewayHost
 import ai.novaai.app.gateway.isPrivateLanGatewayHost
-import ai.novaai.app.protocol.OpenClawCallLogCommand
-import ai.novaai.app.protocol.OpenClawCameraCommand
-import ai.novaai.app.protocol.OpenClawCapability
-import ai.novaai.app.protocol.OpenClawLocationCommand
-import ai.novaai.app.protocol.OpenClawMotionCommand
-import ai.novaai.app.protocol.OpenClawPhotosCommand
-import ai.novaai.app.protocol.OpenClawSmsCommand
+import ai.novaai.app.protocol.NovaAICallLogCommand
+import ai.novaai.app.protocol.NovaAICameraCommand
+import ai.novaai.app.protocol.NovaAICapability
+import ai.novaai.app.protocol.NovaAILocationCommand
+import ai.novaai.app.protocol.NovaAIMotionCommand
+import ai.novaai.app.protocol.NovaAIPhotosCommand
+import ai.novaai.app.protocol.NovaAISmsCommand
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -28,7 +28,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_prefersStoredPinOverAdvertisedFingerprint() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "10.0.0.2",
         port = 18789,
@@ -51,7 +51,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_doesNotTrustAdvertisedFingerprintWhenNoStoredPin() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "10.0.0.2",
         port = 18789,
@@ -128,7 +128,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryTailnetWithoutHintsStillRequiresTls() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "100.64.0.9",
         port = 18789,
@@ -152,7 +152,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryPrivateLanWithoutHintsStillRequiresTls() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "192.168.1.20",
         port = 18789,
@@ -176,7 +176,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryLoopbackWithoutHintsCanStayCleartext() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "127.0.0.1",
         port = 18789,
@@ -198,7 +198,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryLocalhostWithoutHintsCanStayCleartext() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "localhost",
         port = 18789,
@@ -220,7 +220,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryAndroidEmulatorWithoutHintsCanStayCleartext() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "10.0.2.2",
         port = 18789,
@@ -256,7 +256,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryIpv6LoopbackWithoutHintsCanStayCleartext() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "::1",
         port = 18789,
@@ -278,7 +278,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryMappedIpv4LoopbackWithoutHintsCanStayCleartext() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "::ffff:127.0.0.1",
         port = 18789,
@@ -300,7 +300,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryNonLoopbackIpv6WithoutHintsRequiresTls() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "2001:db8::1",
         port = 18789,
@@ -324,7 +324,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryUnspecifiedIpv4WithoutHintsRequiresTls() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "0.0.0.0",
         port = 18789,
@@ -348,7 +348,7 @@ class ConnectionManagerTest {
   fun resolveTlsParamsForEndpoint_discoveryUnspecifiedIpv6WithoutHintsRequiresTls() {
     val endpoint =
       GatewayEndpoint(
-        stableId = "_openclaw-gw._tcp.|local.|Test",
+        stableId = "_novaai-gw._tcp.|local.|Test",
         name = "Test",
         host = "::",
         port = 18789,
@@ -392,9 +392,9 @@ class ConnectionManagerTest {
         smsSearchPossible = true,
       ).buildNodeConnectOptions()
 
-    assertTrue(options.commands.contains(OpenClawSmsCommand.Search.rawValue))
-    assertFalse(options.commands.contains(OpenClawSmsCommand.Send.rawValue))
-    assertFalse(options.caps.contains(OpenClawCapability.Sms.rawValue))
+    assertTrue(options.commands.contains(NovaAISmsCommand.Search.rawValue))
+    assertFalse(options.commands.contains(NovaAISmsCommand.Send.rawValue))
+    assertFalse(options.caps.contains(NovaAICapability.Sms.rawValue))
   }
 
   @Test
@@ -406,9 +406,9 @@ class ConnectionManagerTest {
         smsSearchPossible = false,
       ).buildNodeConnectOptions()
 
-    assertFalse(options.commands.contains(OpenClawSmsCommand.Search.rawValue))
-    assertFalse(options.commands.contains(OpenClawSmsCommand.Send.rawValue))
-    assertFalse(options.caps.contains(OpenClawCapability.Sms.rawValue))
+    assertFalse(options.commands.contains(NovaAISmsCommand.Search.rawValue))
+    assertFalse(options.commands.contains(NovaAISmsCommand.Send.rawValue))
+    assertFalse(options.caps.contains(NovaAICapability.Sms.rawValue))
   }
 
   @Test
@@ -420,8 +420,8 @@ class ConnectionManagerTest {
         smsSearchPossible = true,
       ).buildNodeConnectOptions()
 
-    assertTrue(options.commands.contains(OpenClawSmsCommand.Search.rawValue))
-    assertTrue(options.caps.contains(OpenClawCapability.Sms.rawValue))
+    assertTrue(options.commands.contains(NovaAISmsCommand.Search.rawValue))
+    assertTrue(options.caps.contains(NovaAICapability.Sms.rawValue))
   }
 
   @Test
@@ -433,9 +433,9 @@ class ConnectionManagerTest {
         smsSearchPossible = false,
       ).buildNodeConnectOptions()
 
-    assertTrue(options.commands.contains(OpenClawSmsCommand.Send.rawValue))
-    assertFalse(options.commands.contains(OpenClawSmsCommand.Search.rawValue))
-    assertTrue(options.caps.contains(OpenClawCapability.Sms.rawValue))
+    assertTrue(options.commands.contains(NovaAISmsCommand.Send.rawValue))
+    assertFalse(options.commands.contains(NovaAISmsCommand.Search.rawValue))
+    assertTrue(options.caps.contains(NovaAICapability.Sms.rawValue))
   }
 
   @Test
@@ -451,17 +451,17 @@ class ConnectionManagerTest {
         hasRecordAudioPermission = true,
       ).buildNodeConnectOptions()
 
-    assertTrue(options.commands.contains(OpenClawCameraCommand.List.rawValue))
-    assertTrue(options.commands.contains(OpenClawLocationCommand.Get.rawValue))
-    assertTrue(options.commands.contains(OpenClawMotionCommand.Activity.rawValue))
-    assertTrue(options.commands.contains(OpenClawCallLogCommand.Search.rawValue))
-    assertTrue(options.commands.contains(OpenClawPhotosCommand.Latest.rawValue))
-    assertTrue(options.caps.contains(OpenClawCapability.Camera.rawValue))
-    assertTrue(options.caps.contains(OpenClawCapability.Location.rawValue))
-    assertTrue(options.caps.contains(OpenClawCapability.Motion.rawValue))
-    assertTrue(options.caps.contains(OpenClawCapability.CallLog.rawValue))
-    assertTrue(options.caps.contains(OpenClawCapability.Photos.rawValue))
-    assertTrue(options.caps.contains(OpenClawCapability.VoiceWake.rawValue))
+    assertTrue(options.commands.contains(NovaAICameraCommand.List.rawValue))
+    assertTrue(options.commands.contains(NovaAILocationCommand.Get.rawValue))
+    assertTrue(options.commands.contains(NovaAIMotionCommand.Activity.rawValue))
+    assertTrue(options.commands.contains(NovaAICallLogCommand.Search.rawValue))
+    assertTrue(options.commands.contains(NovaAIPhotosCommand.Latest.rawValue))
+    assertTrue(options.caps.contains(NovaAICapability.Camera.rawValue))
+    assertTrue(options.caps.contains(NovaAICapability.Location.rawValue))
+    assertTrue(options.caps.contains(NovaAICapability.Motion.rawValue))
+    assertTrue(options.caps.contains(NovaAICapability.CallLog.rawValue))
+    assertTrue(options.caps.contains(NovaAICapability.Photos.rawValue))
+    assertTrue(options.caps.contains(NovaAICapability.VoiceWake.rawValue))
   }
 
   @Test
@@ -472,7 +472,7 @@ class ConnectionManagerTest {
         hasRecordAudioPermission = false,
       ).buildNodeConnectOptions()
 
-    assertFalse(options.caps.contains(OpenClawCapability.VoiceWake.rawValue))
+    assertFalse(options.caps.contains(NovaAICapability.VoiceWake.rawValue))
   }
 
   @Test
@@ -485,16 +485,16 @@ class ConnectionManagerTest {
         photosAvailable = false,
       ).buildNodeConnectOptions()
 
-    assertFalse(options.commands.contains(OpenClawCameraCommand.List.rawValue))
-    assertFalse(options.commands.contains(OpenClawCameraCommand.Snap.rawValue))
-    assertFalse(options.commands.contains(OpenClawCameraCommand.Clip.rawValue))
-    assertFalse(options.commands.contains(OpenClawLocationCommand.Get.rawValue))
-    assertFalse(options.commands.contains(OpenClawCallLogCommand.Search.rawValue))
-    assertFalse(options.commands.contains(OpenClawPhotosCommand.Latest.rawValue))
-    assertFalse(options.caps.contains(OpenClawCapability.Camera.rawValue))
-    assertFalse(options.caps.contains(OpenClawCapability.Location.rawValue))
-    assertFalse(options.caps.contains(OpenClawCapability.CallLog.rawValue))
-    assertFalse(options.caps.contains(OpenClawCapability.Photos.rawValue))
+    assertFalse(options.commands.contains(NovaAICameraCommand.List.rawValue))
+    assertFalse(options.commands.contains(NovaAICameraCommand.Snap.rawValue))
+    assertFalse(options.commands.contains(NovaAICameraCommand.Clip.rawValue))
+    assertFalse(options.commands.contains(NovaAILocationCommand.Get.rawValue))
+    assertFalse(options.commands.contains(NovaAICallLogCommand.Search.rawValue))
+    assertFalse(options.commands.contains(NovaAIPhotosCommand.Latest.rawValue))
+    assertFalse(options.caps.contains(NovaAICapability.Camera.rawValue))
+    assertFalse(options.caps.contains(NovaAICapability.Location.rawValue))
+    assertFalse(options.caps.contains(NovaAICapability.CallLog.rawValue))
+    assertFalse(options.caps.contains(NovaAICapability.Photos.rawValue))
   }
 
   @Test
@@ -505,9 +505,9 @@ class ConnectionManagerTest {
         motionPedometerAvailable = true,
       ).buildNodeConnectOptions()
 
-    assertFalse(options.commands.contains(OpenClawMotionCommand.Activity.rawValue))
-    assertTrue(options.commands.contains(OpenClawMotionCommand.Pedometer.rawValue))
-    assertTrue(options.caps.contains(OpenClawCapability.Motion.rawValue))
+    assertFalse(options.commands.contains(NovaAIMotionCommand.Activity.rawValue))
+    assertTrue(options.commands.contains(NovaAIMotionCommand.Pedometer.rawValue))
+    assertTrue(options.caps.contains(NovaAICapability.Motion.rawValue))
   }
 
   @Test
@@ -518,9 +518,9 @@ class ConnectionManagerTest {
         motionPedometerAvailable = false,
       ).buildNodeConnectOptions()
 
-    assertFalse(options.commands.contains(OpenClawMotionCommand.Activity.rawValue))
-    assertFalse(options.commands.contains(OpenClawMotionCommand.Pedometer.rawValue))
-    assertFalse(options.caps.contains(OpenClawCapability.Motion.rawValue))
+    assertFalse(options.commands.contains(NovaAIMotionCommand.Activity.rawValue))
+    assertFalse(options.commands.contains(NovaAIMotionCommand.Pedometer.rawValue))
+    assertFalse(options.caps.contains(NovaAICapability.Motion.rawValue))
   }
 
   private fun newManager(

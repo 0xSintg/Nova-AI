@@ -45,7 +45,7 @@ internal fun SkillsSettingsScreen(
 
   SettingsDetailFrame(
     title = "Skills",
-    subtitle = "Installed capabilities available to OpenClaw.",
+    subtitle = "Installed capabilities available to Nova AI.",
     icon = Icons.Default.Settings,
     onBack = onBack,
   ) {
@@ -136,10 +136,10 @@ private fun skillSubtitle(skill: GatewaySkillSummary): String {
 
 private fun skillSourceLabel(skill: GatewaySkillSummary): String =
   when (skill.source) {
-    "openclaw-bundled" -> if (skill.bundled) "Built-in" else "Bundled"
-    "openclaw-managed" -> "Installed"
-    "openclaw-workspace" -> "Workspace"
-    "openclaw-extra" -> "Extra"
+    "novaai-bundled" -> if (skill.bundled) "Built-in" else "Bundled"
+    "novaai-managed" -> "Installed"
+    "novaai-workspace" -> "Workspace"
+    "novaai-extra" -> "Extra"
     else -> "Skill"
   }
 

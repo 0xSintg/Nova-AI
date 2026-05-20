@@ -141,7 +141,7 @@ internal fun SessionsScreen(
           val active = session.key == chatSessionKey
           SessionRow(
             title = displaySessionTitle(session.displayName),
-            subtitle = if (active) "Current session" else "OpenClaw session",
+            subtitle = if (active) "Current session" else "Nova AI session",
             metadata = session.updatedAtMs?.let(::relativeSessionTime) ?: "now",
             active = active,
             compact = compactLayout,
@@ -244,7 +244,7 @@ private fun SessionRow(
             Text(text = subtitle, style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted, maxLines = 1)
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
               SessionMiniTag(text = "Workspace")
-              SessionMiniTag(text = if (active) "Active" else "OpenClaw")
+              SessionMiniTag(text = if (active) "Active" else "Nova AI")
             }
           }
         }

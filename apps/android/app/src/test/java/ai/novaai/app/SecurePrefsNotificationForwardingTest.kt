@@ -14,7 +14,7 @@ class SecurePrefsNotificationForwardingTest {
   @Test
   fun setNotificationForwardingQuietHours_rejectsInvalidDraftsWithoutMutatingStoredValues() {
     val context = RuntimeEnvironment.getApplication()
-    val plainPrefs = context.getSharedPreferences("openclaw.node", Context.MODE_PRIVATE)
+    val plainPrefs = context.getSharedPreferences("novaai.node", Context.MODE_PRIVATE)
     plainPrefs.edit().clear().commit()
 
     val prefs = SecurePrefs(context)
@@ -47,7 +47,7 @@ class SecurePrefsNotificationForwardingTest {
   @Test
   fun setNotificationForwardingQuietHours_persistsValidDraftsAndEnabledState() {
     val context = RuntimeEnvironment.getApplication()
-    val plainPrefs = context.getSharedPreferences("openclaw.node", Context.MODE_PRIVATE)
+    val plainPrefs = context.getSharedPreferences("novaai.node", Context.MODE_PRIVATE)
     plainPrefs.edit().clear().commit()
 
     val prefs = SecurePrefs(context)
@@ -68,7 +68,7 @@ class SecurePrefsNotificationForwardingTest {
   @Test
   fun setNotificationForwardingQuietHours_disablesWithoutRevalidatingDrafts() {
     val context = RuntimeEnvironment.getApplication()
-    val plainPrefs = context.getSharedPreferences("openclaw.node", Context.MODE_PRIVATE)
+    val plainPrefs = context.getSharedPreferences("novaai.node", Context.MODE_PRIVATE)
     plainPrefs.edit().clear().commit()
 
     val prefs = SecurePrefs(context)
@@ -96,7 +96,7 @@ class SecurePrefsNotificationForwardingTest {
   @Test
   fun getNotificationForwardingPolicy_readsLatestQuietHoursImmediately() {
     val context = RuntimeEnvironment.getApplication()
-    val plainPrefs = context.getSharedPreferences("openclaw.node", Context.MODE_PRIVATE)
+    val plainPrefs = context.getSharedPreferences("novaai.node", Context.MODE_PRIVATE)
     plainPrefs.edit().clear().commit()
 
     val prefs = SecurePrefs(context)
@@ -118,7 +118,7 @@ class SecurePrefsNotificationForwardingTest {
   @Test
   fun notificationForwarding_defaultsDisabledForSaferPosture() {
     val context = RuntimeEnvironment.getApplication()
-    val plainPrefs = context.getSharedPreferences("openclaw.node", Context.MODE_PRIVATE)
+    val plainPrefs = context.getSharedPreferences("novaai.node", Context.MODE_PRIVATE)
     plainPrefs.edit().clear().commit()
 
     val prefs = SecurePrefs(context)

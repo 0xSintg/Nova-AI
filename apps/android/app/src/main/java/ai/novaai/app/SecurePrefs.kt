@@ -20,12 +20,12 @@ class SecurePrefs(
   private val securePrefsOverride: SharedPreferences? = null,
 ) {
   companion object {
-    val defaultWakeWords: List<String> = listOf("openclaw", "claude")
+    val defaultWakeWords: List<String> = listOf("nova-ai", "claude")
     private const val displayNameKey = "node.displayName"
     private const val locationModeKey = "location.enabledMode"
     private const val voiceWakeModeKey = "voiceWake.mode"
-    private const val plainPrefsName = "openclaw.node"
-    private const val securePrefsName = "openclaw.node.secure"
+    private const val plainPrefsName = "novaai.node"
+    private const val securePrefsName = "novaai.node.secure"
     private const val notificationsForwardingEnabledKey = "notifications.forwarding.enabled"
     private const val defaultNotificationForwardingEnabled = false
     private const val notificationsForwardingModeKey = "notifications.forwarding.mode"

@@ -15,7 +15,7 @@ class SecurePrefsTest {
   @Test
   fun loadLocationMode_migratesLegacyAlwaysValue() {
     val context = RuntimeEnvironment.getApplication()
-    val plainPrefs = context.getSharedPreferences("openclaw.node", Context.MODE_PRIVATE)
+    val plainPrefs = context.getSharedPreferences("novaai.node", Context.MODE_PRIVATE)
     plainPrefs
       .edit()
       .clear()
@@ -31,7 +31,7 @@ class SecurePrefsTest {
   @Test
   fun voiceMicEnabled_ignoresOldTalkEnabledKey() {
     val context = RuntimeEnvironment.getApplication()
-    val plainPrefs = context.getSharedPreferences("openclaw.node", Context.MODE_PRIVATE)
+    val plainPrefs = context.getSharedPreferences("novaai.node", Context.MODE_PRIVATE)
     plainPrefs
       .edit()
       .clear()
@@ -47,7 +47,7 @@ class SecurePrefsTest {
   @Test
   fun setVoiceMicEnabled_persistsNewKeyOnly() {
     val context = RuntimeEnvironment.getApplication()
-    val plainPrefs = context.getSharedPreferences("openclaw.node", Context.MODE_PRIVATE)
+    val plainPrefs = context.getSharedPreferences("novaai.node", Context.MODE_PRIVATE)
     plainPrefs
       .edit()
       .clear()
@@ -65,7 +65,7 @@ class SecurePrefsTest {
   @Test
   fun saveGatewayBootstrapToken_persistsSeparatelyFromSharedToken() {
     val context = RuntimeEnvironment.getApplication()
-    val securePrefs = context.getSharedPreferences("openclaw.node.secure.test", Context.MODE_PRIVATE)
+    val securePrefs = context.getSharedPreferences("novaai.node.secure.test", Context.MODE_PRIVATE)
     securePrefs.edit().clear().commit()
     val prefs = SecurePrefs(context, securePrefsOverride = securePrefs)
 
@@ -80,7 +80,7 @@ class SecurePrefsTest {
   @Test
   fun clearGatewaySetupAuth_removesStoredGatewayAuth() {
     val context = RuntimeEnvironment.getApplication()
-    val securePrefs = context.getSharedPreferences("openclaw.node.secure.test.clear", Context.MODE_PRIVATE)
+    val securePrefs = context.getSharedPreferences("novaai.node.secure.test.clear", Context.MODE_PRIVATE)
     securePrefs.edit().clear().commit()
     val prefs = SecurePrefs(context, securePrefsOverride = securePrefs)
 

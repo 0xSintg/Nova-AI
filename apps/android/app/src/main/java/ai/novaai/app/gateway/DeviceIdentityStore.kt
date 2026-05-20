@@ -19,7 +19,7 @@ class DeviceIdentityStore(
   context: Context,
 ) {
   private val json = Json { ignoreUnknownKeys = true }
-  private val identityFile = File(context.filesDir, "openclaw/identity/device.json")
+  private val identityFile = File(context.filesDir, "novaai/identity/device.json")
 
   @Volatile private var cachedIdentity: DeviceIdentity? = null
 

@@ -378,7 +378,7 @@ private fun OverviewScreen(
           item {
             ClawEmptyState(
               title = "No recent sessions",
-              body = "Start a chat and your active OpenClaw conversations will appear here.",
+              body = "Start a chat and your active Nova AI conversations will appear here.",
               action = { ClawPrimaryButton(text = "Start Chat", onClick = { onSelectTab(Tab.Chat) }) },
             )
           }
@@ -390,7 +390,7 @@ private fun OverviewScreen(
                   RecentSessionListItem(
                     key = session.key,
                     title = displaySessionTitle(session.displayName),
-                    subtitle = if (pendingRunCount > 0) "Assistant working" else "OpenClaw session",
+                    subtitle = if (pendingRunCount > 0) "Assistant working" else "Nova AI session",
                     metadata = session.updatedAtMs?.let(::relativeSessionTime) ?: "",
                   )
                 },
@@ -702,7 +702,7 @@ private fun SettingsShellScreen(
       }
 
       item {
-        ProfilePanel(displayName = displayName.ifBlank { "OpenClaw" }, onClick = { onRouteChange(SettingsRoute.Profile) })
+        ProfilePanel(displayName = displayName.ifBlank { "Nova AI" }, onClick = { onRouteChange(SettingsRoute.Profile) })
       }
 
       item {
@@ -745,7 +745,7 @@ private fun SettingsShellScreen(
           horizontalAlignment = Alignment.CenterHorizontally,
           verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {
-          Text(text = "OpenClaw ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})", style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted)
+          Text(text = "Nova AI ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})", style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted)
           Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
               text = if (isConnected) "All systems operational" else "Gateway not connected",
@@ -885,7 +885,7 @@ private fun ProfilePanel(
       }
       Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
         Text(text = displayName, style = ClawTheme.type.section, color = ClawTheme.colors.text, maxLines = 1)
-        Text(text = "OpenClaw mobile", style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted, maxLines = 1)
+        Text(text = "Nova AI mobile", style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted, maxLines = 1)
       }
       Icon(
         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,

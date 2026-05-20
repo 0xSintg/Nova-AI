@@ -2,13 +2,13 @@ package ai.novaai.app.node
 
 import ai.novaai.app.gateway.DeviceIdentityStore
 import ai.novaai.app.gateway.GatewaySession
-import ai.novaai.app.protocol.OpenClawCallLogCommand
-import ai.novaai.app.protocol.OpenClawCameraCommand
-import ai.novaai.app.protocol.OpenClawLocationCommand
-import ai.novaai.app.protocol.OpenClawMotionCommand
-import ai.novaai.app.protocol.OpenClawPhotosCommand
-import ai.novaai.app.protocol.OpenClawSmsCommand
-import ai.novaai.app.protocol.OpenClawTalkCommand
+import ai.novaai.app.protocol.NovaAICallLogCommand
+import ai.novaai.app.protocol.NovaAICameraCommand
+import ai.novaai.app.protocol.NovaAILocationCommand
+import ai.novaai.app.protocol.NovaAIMotionCommand
+import ai.novaai.app.protocol.NovaAIPhotosCommand
+import ai.novaai.app.protocol.NovaAISmsCommand
+import ai.novaai.app.protocol.NovaAITalkCommand
 import android.content.Context
 import android.content.pm.PackageManager
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -104,7 +104,7 @@ class InvokeDispatcherTest {
           readSmsAvailable = false,
           smsFeatureEnabled = true,
           smsTelephonyAvailable = true,
-        ).handleInvoke(OpenClawSmsCommand.Search.rawValue, "not-json")
+        ).handleInvoke(NovaAISmsCommand.Search.rawValue, "not-json")
 
       assertEquals("SMS_PERMISSION_REQUIRED", result.error?.code)
       assertEquals("grant READ_SMS permission", result.error?.message)
@@ -118,7 +118,7 @@ class InvokeDispatcherTest {
           readSmsAvailable = false,
           smsFeatureEnabled = false,
           smsTelephonyAvailable = true,
-        ).handleInvoke(OpenClawSmsCommand.Search.rawValue, "not-json")
+        ).handleInvoke(NovaAISmsCommand.Search.rawValue, "not-json")
 
       assertEquals("SMS_UNAVAILABLE", result.error?.code)
       assertEquals("SMS_UNAVAILABLE: SMS not available on this device", result.error?.message)
@@ -132,7 +132,7 @@ class InvokeDispatcherTest {
           sendSmsAvailable = true,
           smsFeatureEnabled = true,
           smsTelephonyAvailable = true,
-        ).handleInvoke(OpenClawSmsCommand.Send.rawValue, """{"to":"+15551234567","message":"hi"}""")
+        ).handleInvoke(NovaAISmsCommand.Send.rawValue, """{"to":"+15551234567","message":"hi"}""")
 
       assertEquals("SMS_PERMISSION_REQUIRED", result.error?.code)
       assertEquals("grant SMS permission", result.error?.message)
@@ -146,7 +146,7 @@ class InvokeDispatcherTest {
           sendSmsAvailable = false,
           smsFeatureEnabled = true,
           smsTelephonyAvailable = true,
-        ).handleInvoke(OpenClawSmsCommand.Send.rawValue, """{"to":"+15551234567","message":"hi"}""")
+        ).handleInvoke(NovaAISmsCommand.Send.rawValue, """{"to":"+15551234567","message":"hi"}""")
 
       assertEquals("SMS_UNAVAILABLE", result.error?.code)
       assertEquals("SMS_UNAVAILABLE: SMS not available on this device", result.error?.message)
@@ -155,7 +155,7 @@ class InvokeDispatcherTest {
   @Test
   fun handleInvoke_blocksCameraCommandsWhenCameraDisabled() =
     runTest {
-      val result = newDispatcher(cameraEnabled = false).handleInvoke(OpenClawCameraCommand.List.rawValue, null)
+      val result = newDispatcher(cameraEnabled = false).handleInvoke(NovaAICameraCommand.List.rawValue, null)
 
       assertEquals("CAMERA_DISABLED", result.error?.code)
       assertEquals("CAMERA_DISABLED: enable Camera in Settings", result.error?.message)
@@ -164,7 +164,7 @@ class InvokeDispatcherTest {
   @Test
   fun handleInvoke_blocksLocationCommandWhenLocationDisabled() =
     runTest {
-      val result = newDispatcher(locationEnabled = false).handleInvoke(OpenClawLocationCommand.Get.rawValue, null)
+      val result = newDispatcher(locationEnabled = false).handleInvoke(NovaAILocationCommand.Get.rawValue, null)
 
       assertEquals("LOCATION_DISABLED", result.error?.code)
       assertEquals("LOCATION_DISABLED: enable Location in Settings", result.error?.message)
@@ -175,7 +175,7 @@ class InvokeDispatcherTest {
     runTest {
       val result =
         newDispatcher(motionActivityAvailable = false)
-          .handleInvoke(OpenClawMotionCommand.Activity.rawValue, null)
+          .handleInvoke(NovaAIMotionCommand.Activity.rawValue, null)
 
       assertEquals("MOTION_UNAVAILABLE", result.error?.code)
       assertEquals("MOTION_UNAVAILABLE: accelerometer not available", result.error?.message)
@@ -186,7 +186,7 @@ class InvokeDispatcherTest {
     runTest {
       val result =
         newDispatcher(motionPedometerAvailable = false)
-          .handleInvoke(OpenClawMotionCommand.Pedometer.rawValue, null)
+          .handleInvoke(NovaAIMotionCommand.Pedometer.rawValue, null)
 
       assertEquals("PEDOMETER_UNAVAILABLE", result.error?.code)
       assertEquals("PEDOMETER_UNAVAILABLE: step counter not available", result.error?.message)
@@ -196,7 +196,7 @@ class InvokeDispatcherTest {
   fun handleInvoke_blocksCallLogWhenUnavailable() =
     runTest {
       val result =
-        newDispatcher(callLogAvailable = false).handleInvoke(OpenClawCallLogCommand.Search.rawValue, null)
+        newDispatcher(callLogAvailable = false).handleInvoke(NovaAICallLogCommand.Search.rawValue, null)
 
       assertEquals("CALL_LOG_UNAVAILABLE", result.error?.code)
       assertEquals("CALL_LOG_UNAVAILABLE: call log not available on this build", result.error?.message)
@@ -205,7 +205,7 @@ class InvokeDispatcherTest {
   @Test
   fun handleInvoke_blocksPhotosWhenUnavailable() =
     runTest {
-      val result = newDispatcher(photosAvailable = false).handleInvoke(OpenClawPhotosCommand.Latest.rawValue, null)
+      val result = newDispatcher(photosAvailable = false).handleInvoke(NovaAIPhotosCommand.Latest.rawValue, null)
 
       assertEquals("PHOTOS_UNAVAILABLE", result.error?.code)
       assertEquals("PHOTOS_UNAVAILABLE: photos not available on this build", result.error?.message)
@@ -226,10 +226,10 @@ class InvokeDispatcherTest {
       val talk = InvokeDispatcherFakeTalkHandler()
       val dispatcher = newDispatcher(talkHandler = talk)
 
-      val start = dispatcher.handleInvoke(OpenClawTalkCommand.PttStart.rawValue, null)
-      val stop = dispatcher.handleInvoke(OpenClawTalkCommand.PttStop.rawValue, null)
-      val cancel = dispatcher.handleInvoke(OpenClawTalkCommand.PttCancel.rawValue, null)
-      val once = dispatcher.handleInvoke(OpenClawTalkCommand.PttOnce.rawValue, null)
+      val start = dispatcher.handleInvoke(NovaAITalkCommand.PttStart.rawValue, null)
+      val stop = dispatcher.handleInvoke(NovaAITalkCommand.PttStop.rawValue, null)
+      val cancel = dispatcher.handleInvoke(NovaAITalkCommand.PttCancel.rawValue, null)
+      val once = dispatcher.handleInvoke(NovaAITalkCommand.PttOnce.rawValue, null)
 
       assertEquals("""{"captureId":"start"}""", start.payloadJson)
       assertEquals("""{"status":"stop"}""", stop.payloadJson)

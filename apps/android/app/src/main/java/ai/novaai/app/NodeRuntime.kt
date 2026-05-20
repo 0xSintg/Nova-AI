@@ -43,7 +43,7 @@ import ai.novaai.app.node.asObjectOrNull
 import ai.novaai.app.node.asStringOrNull
 import ai.novaai.app.node.invokeErrorFromThrowable
 import ai.novaai.app.node.parseHexColorArgb
-import ai.novaai.app.protocol.OpenClawCanvasA2UIAction
+import ai.novaai.app.protocol.NovaAICanvasA2UIAction
 import ai.novaai.app.voice.MicCaptureManager
 import ai.novaai.app.voice.TalkModeManager
 import ai.novaai.app.voice.VoiceConversationEntry
@@ -797,7 +797,7 @@ class NodeRuntime(
           _canvasRehydratePending.value = false
           _canvasRehydrateErrorText.value = "Failed to request restore. Tap to retry."
         }
-        Log.w("OpenClawCanvas", "canvas rehydrate request failed ($source): transport unavailable")
+        Log.w("NovaAICanvas", "canvas rehydrate request failed ($source): transport unavailable")
         return@launch
       }
       scope.launch {
@@ -940,7 +940,7 @@ class NodeRuntime(
       return
     }
 
-    val client = connectionManager.buildClientInfo(clientId = "openclaw-android", clientMode = "node")
+    val client = connectionManager.buildClientInfo(clientId = "novaai-android", clientMode = "node")
     val payloadJson =
       NodePresenceAliveBeacon.makePayloadJson(
         trigger = trigger,
@@ -962,7 +962,7 @@ class NodeRuntime(
       nodePresenceAliveLastSuccessAtMs = nowMs
     } else {
       Log.d(
-        "OpenClawNode",
+        "NovaAINode",
         "node.presence.alive not handled: ${NodePresenceAliveBeacon.sanitizeReasonForLog(response?.reason)}",
       )
     }
@@ -1495,7 +1495,7 @@ class NodeRuntime(
             .randomUUID()
             .toString()
         }
-      val name = OpenClawCanvasA2UIAction.extractActionName(userActionObj) ?: return@launch
+      val name = NovaAICanvasA2UIAction.extractActionName(userActionObj) ?: return@launch
 
       val surfaceId =
         (userActionObj["surfaceId"] as? JsonPrimitive)
@@ -1513,7 +1513,7 @@ class NodeRuntime(
 
       val sessionKey = resolveMainSessionKey()
       val message =
-        OpenClawCanvasA2UIAction.formatAgentMessage(
+        NovaAICanvasA2UIAction.formatAgentMessage(
           actionName = name,
           sessionKey = sessionKey,
           surfaceId = surfaceId,
@@ -1547,7 +1547,7 @@ class NodeRuntime(
 
       try {
         canvas.eval(
-          OpenClawCanvasA2UIAction.jsDispatchA2UIActionStatus(
+          NovaAICanvasA2UIAction.jsDispatchA2UIActionStatus(
             actionId = actionId,
             ok = connected && error == null,
             error = error,
@@ -2262,7 +2262,7 @@ class NodeRuntime(
   private fun parseDreamDiaryEntries(content: String?): List<GatewayDreamDiaryEntry> {
     val raw = content?.trim().orEmpty()
     if (raw.isEmpty()) return emptyList()
-    val body = raw.substringAfter("<!-- openclaw:dreaming:diary:start -->", raw).substringBefore("<!-- openclaw:dreaming:diary:end -->")
+    val body = raw.substringAfter("<!-- novaai:dreaming:diary:start -->", raw).substringBefore("<!-- novaai:dreaming:diary:end -->")
     return body
       .split(Regex("\\n---\\n"))
       .mapNotNull(::parseDreamDiaryEntry)
@@ -2368,7 +2368,7 @@ class NodeRuntime(
         HomeCanvasPayload(
           gatewayState = "connecting",
           eyebrow = "Reconnecting",
-          title = "OpenClaw is syncing back up",
+          title = "Nova AI is syncing back up",
           subtitle =
             "The gateway session is coming back online. Agent shortcuts should settle automatically in a moment.",
           gatewayLabel = gatewayLabel,
@@ -2382,7 +2382,7 @@ class NodeRuntime(
       HomeCanvasGatewayState.Error, HomeCanvasGatewayState.Offline ->
         HomeCanvasPayload(
           gatewayState = if (state == HomeCanvasGatewayState.Error) "error" else "offline",
-          eyebrow = "Welcome to OpenClaw",
+          eyebrow = "Welcome to Nova AI",
           title = "Your phone stays quiet until it is needed",
           subtitle =
             "Pair this device to your gateway to wake it only for real work, keep a live agent overview handy, and avoid battery-draining background loops.",

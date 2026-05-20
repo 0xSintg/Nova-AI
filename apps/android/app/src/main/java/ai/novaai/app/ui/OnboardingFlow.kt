@@ -574,7 +574,7 @@ private fun PermissionSetupScreen(
               color = ClawTheme.colors.text,
             )
             Text(
-              text = "These permissions keep OpenClaw secure\nand useful.",
+              text = "These permissions keep Nova AI secure\nand useful.",
               style = ClawTheme.type.body,
               color = ClawTheme.colors.textMuted,
             )
@@ -709,7 +709,7 @@ private fun PermissionTopBar(onBack: () -> Unit) {
       title = { Text("Permissions", style = ClawTheme.type.section, color = ClawTheme.colors.text) },
       text = {
         Text(
-          "Choose what this phone can share with OpenClaw. You can change these later in Settings.",
+          "Choose what this phone can share with Nova AI. You can change these later in Settings.",
           style = ClawTheme.type.body,
           color = ClawTheme.colors.textMuted,
         )
@@ -887,7 +887,7 @@ private fun recoveryGatewayDetail(
     } else if (statusText.contains("operator offline", ignoreCase = true)) {
       "Gateway paired. Waiting for operator access."
     } else if (gatewayStatusLooksLikePairing(statusText)) {
-      "Gateway approval is in progress. OpenClaw will retry automatically."
+      "Gateway approval is in progress. Nova AI will retry automatically."
     } else {
       "Gateway unreachable"
     }
@@ -901,14 +901,14 @@ private fun copyGatewayDiagnostic(
 ) {
   val diagnostic =
     listOf(
-      "OpenClaw Android gateway diagnostic",
+      "Nova AI Android gateway diagnostic",
       "Status: $statusText",
       "Gateway: ${serverName?.takeIf { it.isNotBlank() } ?: "Home Gateway"}",
       "Address: ${remoteAddress?.takeIf { it.isNotBlank() } ?: "Not available"}",
       "Ready: ${if (ready) "yes" else "no"}",
     ).joinToString("\n")
   val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-  clipboard.setPrimaryClip(ClipData.newPlainText("OpenClaw gateway diagnostic", diagnostic))
+  clipboard.setPrimaryClip(ClipData.newPlainText("Nova AI gateway diagnostic", diagnostic))
   Toast.makeText(context, "Diagnostic copied", Toast.LENGTH_SHORT).show()
 }
 

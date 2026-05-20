@@ -2,7 +2,7 @@ package ai.novaai.app
 
 import android.content.Intent
 
-const val actionAskOpenClaw = "ai.novaai.app.action.ASK_OPENCLAW"
+const val actionAskNovaAI = "ai.novaai.app.action.ASK_NOVAAI"
 const val extraAssistantPrompt = "prompt"
 
 enum class HomeDestination {
@@ -29,7 +29,7 @@ fun parseAssistantLaunchIntent(intent: Intent?): AssistantLaunchRequest? {
         autoSend = false,
       )
 
-    actionAskOpenClaw -> {
+    actionAskNovaAI -> {
       val prompt = intent.getStringExtra(extraAssistantPrompt)?.trim()?.ifEmpty { null }
       AssistantLaunchRequest(
         source = "app_action",

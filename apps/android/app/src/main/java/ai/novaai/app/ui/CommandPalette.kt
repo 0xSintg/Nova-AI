@@ -71,7 +71,7 @@ internal fun CommandPalette(
   val quickActions =
     listOf(
       CommandItem("Open Chat", "Start or continue a conversation", Icons.Outlined.ChatBubbleOutline, onOpenChat),
-      CommandItem("Start Voice", "Talk or dictate with OpenClaw", Icons.Outlined.MicNone, onOpenVoice),
+      CommandItem("Start Voice", "Talk or dictate with Nova AI", Icons.Outlined.MicNone, onOpenVoice),
       CommandItem("Browse Sessions", "Find previous conversations", Icons.Outlined.AccessTime, onOpenSessions),
       CommandItem("Providers & Models", providerCommandSubtitle(isConnected, providers, models), Icons.Outlined.Inventory2, onOpenProviders),
       CommandItem("Settings", "Gateway, voice, notifications, privacy", Icons.Outlined.Settings, onOpenSettings),
@@ -100,7 +100,7 @@ internal fun CommandPalette(
         }
 
         item {
-          ClawTextField(value = query, onValueChange = { query = it }, placeholder = "Search OpenClaw")
+          ClawTextField(value = query, onValueChange = { query = it }, placeholder = "Search Nova AI")
         }
 
         item {
@@ -139,7 +139,7 @@ internal fun CommandPalette(
                   CommandSessionRow(
                     key = session.key,
                     title = commandSessionTitle(session.displayName),
-                    subtitle = if (pendingRunCount > 0) "Assistant working" else "OpenClaw session",
+                    subtitle = if (pendingRunCount > 0) "Assistant working" else "Nova AI session",
                     metadata = session.updatedAtMs?.let(::commandRelativeTime) ?: "now",
                   )
                 },

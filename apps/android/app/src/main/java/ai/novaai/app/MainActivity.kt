@@ -1,6 +1,6 @@
 package ai.novaai.app
 
-import ai.novaai.app.ui.OpenClawTheme
+import ai.novaai.app.ui.NovaAITheme
 import ai.novaai.app.ui.RootScreen
 import android.os.Bundle
 import android.view.WindowManager
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
     }
 
     setContent {
-      OpenClawTheme {
+      NovaAITheme {
         Surface(modifier = Modifier) {
           RootScreen(viewModel = viewModel)
         }

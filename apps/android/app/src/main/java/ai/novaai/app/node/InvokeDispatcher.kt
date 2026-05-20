@@ -1,19 +1,19 @@
 package ai.novaai.app.node
 
 import ai.novaai.app.gateway.GatewaySession
-import ai.novaai.app.protocol.OpenClawCalendarCommand
-import ai.novaai.app.protocol.OpenClawCallLogCommand
-import ai.novaai.app.protocol.OpenClawCameraCommand
-import ai.novaai.app.protocol.OpenClawCanvasA2UICommand
-import ai.novaai.app.protocol.OpenClawCanvasCommand
-import ai.novaai.app.protocol.OpenClawContactsCommand
-import ai.novaai.app.protocol.OpenClawDeviceCommand
-import ai.novaai.app.protocol.OpenClawLocationCommand
-import ai.novaai.app.protocol.OpenClawMotionCommand
-import ai.novaai.app.protocol.OpenClawNotificationsCommand
-import ai.novaai.app.protocol.OpenClawSmsCommand
-import ai.novaai.app.protocol.OpenClawSystemCommand
-import ai.novaai.app.protocol.OpenClawTalkCommand
+import ai.novaai.app.protocol.NovaAICalendarCommand
+import ai.novaai.app.protocol.NovaAICallLogCommand
+import ai.novaai.app.protocol.NovaAICameraCommand
+import ai.novaai.app.protocol.NovaAICanvasA2UICommand
+import ai.novaai.app.protocol.NovaAICanvasCommand
+import ai.novaai.app.protocol.NovaAIContactsCommand
+import ai.novaai.app.protocol.NovaAIDeviceCommand
+import ai.novaai.app.protocol.NovaAILocationCommand
+import ai.novaai.app.protocol.NovaAIMotionCommand
+import ai.novaai.app.protocol.NovaAINotificationsCommand
+import ai.novaai.app.protocol.NovaAISmsCommand
+import ai.novaai.app.protocol.NovaAISystemCommand
+import ai.novaai.app.protocol.NovaAITalkCommand
 
 internal enum class SmsSearchAvailabilityReason {
   Available,
@@ -105,18 +105,18 @@ class InvokeDispatcher(
 
     return when (command) {
       // Canvas commands
-      OpenClawCanvasCommand.Present.rawValue -> {
+      NovaAICanvasCommand.Present.rawValue -> {
         val url = CanvasController.parseNavigateUrl(paramsJson)
         canvas.navigate(url)
         GatewaySession.InvokeResult.ok(null)
       }
-      OpenClawCanvasCommand.Hide.rawValue -> GatewaySession.InvokeResult.ok(null)
-      OpenClawCanvasCommand.Navigate.rawValue -> {
+      NovaAICanvasCommand.Hide.rawValue -> GatewaySession.InvokeResult.ok(null)
+      NovaAICanvasCommand.Navigate.rawValue -> {
         val url = CanvasController.parseNavigateUrl(paramsJson)
         canvas.navigate(url)
         GatewaySession.InvokeResult.ok(null)
       }
-      OpenClawCanvasCommand.Eval.rawValue -> {
+      NovaAICanvasCommand.Eval.rawValue -> {
         val js =
           CanvasController.parseEvalJs(paramsJson)
             ?: return GatewaySession.InvokeResult.error(
@@ -128,7 +128,7 @@ class InvokeDispatcher(
           GatewaySession.InvokeResult.ok("""{"result":${result.toJsonString()}}""")
         }
       }
-      OpenClawCanvasCommand.Snapshot.rawValue -> {
+      NovaAICanvasCommand.Snapshot.rawValue -> {
         val snapshotParams = CanvasController.parseSnapshotParams(paramsJson)
         withCanvasAvailable {
           val base64 =
@@ -142,7 +142,7 @@ class InvokeDispatcher(
       }
 
       // A2UI commands
-      OpenClawCanvasA2UICommand.Reset.rawValue ->
+      NovaAICanvasA2UICommand.Reset.rawValue ->
         withReadyA2ui {
           withCanvasAvailable {
             val res = canvas.eval(A2UIHandler.a2uiResetJS)
@@ -150,7 +150,7 @@ class InvokeDispatcher(
             GatewaySession.InvokeResult.ok(res)
           }
         }
-      OpenClawCanvasA2UICommand.Push.rawValue, OpenClawCanvasA2UICommand.PushJSONL.rawValue -> {
+      NovaAICanvasA2UICommand.Push.rawValue, NovaAICanvasA2UICommand.PushJSONL.rawValue -> {
         val messages =
           try {
             a2uiHandler.decodeA2uiMessages(command, paramsJson)
@@ -171,56 +171,56 @@ class InvokeDispatcher(
       }
 
       // Camera commands
-      OpenClawCameraCommand.List.rawValue -> cameraHandler.handleList(paramsJson)
-      OpenClawCameraCommand.Snap.rawValue -> cameraHandler.handleSnap(paramsJson)
-      OpenClawCameraCommand.Clip.rawValue -> cameraHandler.handleClip(paramsJson)
+      NovaAICameraCommand.List.rawValue -> cameraHandler.handleList(paramsJson)
+      NovaAICameraCommand.Snap.rawValue -> cameraHandler.handleSnap(paramsJson)
+      NovaAICameraCommand.Clip.rawValue -> cameraHandler.handleClip(paramsJson)
 
       // Location command
-      OpenClawLocationCommand.Get.rawValue -> locationHandler.handleLocationGet(paramsJson)
+      NovaAILocationCommand.Get.rawValue -> locationHandler.handleLocationGet(paramsJson)
 
       // Device commands
-      OpenClawDeviceCommand.Status.rawValue -> deviceHandler.handleDeviceStatus(paramsJson)
-      OpenClawDeviceCommand.Info.rawValue -> deviceHandler.handleDeviceInfo(paramsJson)
-      OpenClawDeviceCommand.Permissions.rawValue -> deviceHandler.handleDevicePermissions(paramsJson)
-      OpenClawDeviceCommand.Health.rawValue -> deviceHandler.handleDeviceHealth(paramsJson)
+      NovaAIDeviceCommand.Status.rawValue -> deviceHandler.handleDeviceStatus(paramsJson)
+      NovaAIDeviceCommand.Info.rawValue -> deviceHandler.handleDeviceInfo(paramsJson)
+      NovaAIDeviceCommand.Permissions.rawValue -> deviceHandler.handleDevicePermissions(paramsJson)
+      NovaAIDeviceCommand.Health.rawValue -> deviceHandler.handleDeviceHealth(paramsJson)
 
       // Notifications command
-      OpenClawNotificationsCommand.List.rawValue -> notificationsHandler.handleNotificationsList(paramsJson)
-      OpenClawNotificationsCommand.Actions.rawValue -> notificationsHandler.handleNotificationsActions(paramsJson)
+      NovaAINotificationsCommand.List.rawValue -> notificationsHandler.handleNotificationsList(paramsJson)
+      NovaAINotificationsCommand.Actions.rawValue -> notificationsHandler.handleNotificationsActions(paramsJson)
 
       // System command
-      OpenClawSystemCommand.Notify.rawValue -> systemHandler.handleSystemNotify(paramsJson)
+      NovaAISystemCommand.Notify.rawValue -> systemHandler.handleSystemNotify(paramsJson)
 
       // Talk commands
-      OpenClawTalkCommand.PttStart.rawValue -> talkHandler.handlePttStart(paramsJson)
-      OpenClawTalkCommand.PttStop.rawValue -> talkHandler.handlePttStop(paramsJson)
-      OpenClawTalkCommand.PttCancel.rawValue -> talkHandler.handlePttCancel(paramsJson)
-      OpenClawTalkCommand.PttOnce.rawValue -> talkHandler.handlePttOnce(paramsJson)
+      NovaAITalkCommand.PttStart.rawValue -> talkHandler.handlePttStart(paramsJson)
+      NovaAITalkCommand.PttStop.rawValue -> talkHandler.handlePttStop(paramsJson)
+      NovaAITalkCommand.PttCancel.rawValue -> talkHandler.handlePttCancel(paramsJson)
+      NovaAITalkCommand.PttOnce.rawValue -> talkHandler.handlePttOnce(paramsJson)
 
       // Photos command
-      ai.novaai.app.protocol.OpenClawPhotosCommand.Latest.rawValue ->
+      ai.novaai.app.protocol.NovaAIPhotosCommand.Latest.rawValue ->
         photosHandler.handlePhotosLatest(
           paramsJson,
         )
 
       // Contacts command
-      OpenClawContactsCommand.Search.rawValue -> contactsHandler.handleContactsSearch(paramsJson)
-      OpenClawContactsCommand.Add.rawValue -> contactsHandler.handleContactsAdd(paramsJson)
+      NovaAIContactsCommand.Search.rawValue -> contactsHandler.handleContactsSearch(paramsJson)
+      NovaAIContactsCommand.Add.rawValue -> contactsHandler.handleContactsAdd(paramsJson)
 
       // Calendar command
-      OpenClawCalendarCommand.Events.rawValue -> calendarHandler.handleCalendarEvents(paramsJson)
-      OpenClawCalendarCommand.Add.rawValue -> calendarHandler.handleCalendarAdd(paramsJson)
+      NovaAICalendarCommand.Events.rawValue -> calendarHandler.handleCalendarEvents(paramsJson)
+      NovaAICalendarCommand.Add.rawValue -> calendarHandler.handleCalendarAdd(paramsJson)
 
       // Motion command
-      OpenClawMotionCommand.Activity.rawValue -> motionHandler.handleMotionActivity(paramsJson)
-      OpenClawMotionCommand.Pedometer.rawValue -> motionHandler.handleMotionPedometer(paramsJson)
+      NovaAIMotionCommand.Activity.rawValue -> motionHandler.handleMotionActivity(paramsJson)
+      NovaAIMotionCommand.Pedometer.rawValue -> motionHandler.handleMotionPedometer(paramsJson)
 
       // SMS command
-      OpenClawSmsCommand.Send.rawValue -> smsHandler.handleSmsSend(paramsJson)
-      OpenClawSmsCommand.Search.rawValue -> smsHandler.handleSmsSearch(paramsJson)
+      NovaAISmsCommand.Send.rawValue -> smsHandler.handleSmsSend(paramsJson)
+      NovaAISmsCommand.Search.rawValue -> smsHandler.handleSmsSearch(paramsJson)
 
       // CallLog command
-      OpenClawCallLogCommand.Search.rawValue -> callLogHandler.handleCallLogSearch(paramsJson)
+      NovaAICallLogCommand.Search.rawValue -> callLogHandler.handleCallLogSearch(paramsJson)
 
       // Debug commands
       "debug.ed25519" -> debugHandler.handleEd25519()

@@ -130,7 +130,7 @@ private fun CanvasStandbyPanel(isConnected: Boolean) {
       modifier = Modifier.padding(top = 18.dp),
     )
     Text(
-      text = if (isConnected) "Canvas output appears here when OpenClaw opens an app surface." else "Canvas output needs an active gateway connection.",
+      text = if (isConnected) "Canvas output appears here when Nova AI opens an app surface." else "Canvas output needs an active gateway connection.",
       style = ClawTheme.type.body,
       color = ClawTheme.colors.textMuted,
       modifier = Modifier.padding(top = 6.dp),
