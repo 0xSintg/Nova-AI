@@ -3,11 +3,11 @@ name: Android Release
 on:
   push:
     tags:
-      - "v*.*.*"           # Trigger on version tags e.g. v2026.5.19
+      - "v*.*.*"        # e.g. v2026.5.19 — always builds thirdParty release
   workflow_dispatch:
     inputs:
       flavor:
-        description: "Build flavor"
+        description: "Product flavor"
         required: true
         default: thirdParty
         type: choice
@@ -23,21 +23,58 @@ on:
           - release
           - debug
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Required secrets (Settings → Secrets and variables → Actions):
+#
+#   NOVA_AI_KEYSTORE_BASE64   Base64-encoded .jks file. Generate with:
+#                               keytool -genkeypair -v \
+#                                 -keystore nova-ai.jks -keyalg RSA \
+#                                 -keysize 2048 -validity 10000 \
+#                                 -alias nova-ai-key
+#                               base64 -w0 nova-ai.jks | pbcopy
+#   NOVA_AI_KEYSTORE_PASSWORD Keystore password
+#   NOVA_AI_KEY_ALIAS         Key alias (e.g. nova-ai-key)
+#   NOVA_AI_KEY_PASSWORD      Key password
+#
+# Debug builds don't need any secrets.
+# ─────────────────────────────────────────────────────────────────────────────
+
 jobs:
   build:
     name: Build Nova AI APK
     runs-on: ubuntu-24.04
     timeout-minutes: 45
-
     permissions:
-      contents: write   # needed to upload to GitHub Releases
+      contents: write   # required to attach APK to GitHub Releases
 
     steps:
-      # ── 1. Source ────────────────────────────────────────────────────────────
+      # ── 1. Resolve flavor + build type ──────────────────────────────────────
+      # Do this first so every subsequent step can use the outputs.
+      - name: Resolve build parameters
+        id: params
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            FLAVOR="${{ inputs.flavor }}"
+            BUILD_TYPE="${{ inputs.build_type }}"
+          else
+            FLAVOR="thirdParty"
+            BUILD_TYPE="release"
+          fi
+
+          # Capitalise first letter for Gradle task (thirdParty → ThirdParty)
+          FLAVOR_CAP="$(echo "${FLAVOR:0:1}" | tr '[:lower:]' '[:upper:]')${FLAVOR:1}"
+          BUILD_TYPE_CAP="$(echo "${BUILD_TYPE:0:1}" | tr '[:lower:]' '[:upper:]')${BUILD_TYPE:1}"
+
+          echo "flavor=${FLAVOR}"                               >> "$GITHUB_OUTPUT"
+          echo "build_type=${BUILD_TYPE}"                       >> "$GITHUB_OUTPUT"
+          echo "gradle_task=:app:assemble${FLAVOR_CAP}${BUILD_TYPE_CAP}" >> "$GITHUB_OUTPUT"
+          echo "is_release=$( [ "$BUILD_TYPE" = "release" ] && echo true || echo false )" >> "$GITHUB_OUTPUT"
+
+      # ── 2. Source ────────────────────────────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── 2. Java ──────────────────────────────────────────────────────────────
+      # ── 3. Java ──────────────────────────────────────────────────────────────
       - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
@@ -49,7 +86,7 @@ jobs:
             apps/android/**/gradle-wrapper.properties
             apps/android/gradle/libs.versions.toml
 
-      # ── 3. Android SDK ───────────────────────────────────────────────────────
+      # ── 4. Android SDK ───────────────────────────────────────────────────────
       - name: Cache Android SDK
         uses: actions/cache@v4
         with:
@@ -81,82 +118,61 @@ jobs:
 
       - name: Install Android SDK packages
         run: |
-          yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses >/dev/null
+          set -euo pipefail
+          yes | sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --licenses >/dev/null 2>&1
           sdkmanager --sdk_root="${ANDROID_SDK_ROOT}" --install \
-            "platform-tools"      \
+            "platform-tools"       \
             "platforms;android-36" \
             "build-tools;36.0.0"
 
-      # ── 4. Signing keystore ──────────────────────────────────────────────────
-      #
-      # For release builds, add these secrets in:
-      #   GitHub repo → Settings → Secrets and variables → Actions
-      #
-      #   NOVA_AI_KEYSTORE_BASE64   – base64-encoded .jks keystore file
-      #                               Generate with:
-      #                                 keytool -genkeypair -v \
-      #                                   -keystore nova-ai.jks \
-      #                                   -keyalg RSA -keysize 2048 \
-      #                                   -validity 10000 \
-      #                                   -alias nova-ai-key
-      #                                 base64 -w0 nova-ai.jks
-      #   NOVA_AI_KEYSTORE_PASSWORD – keystore password
-      #   NOVA_AI_KEY_ALIAS         – key alias (e.g. nova-ai-key)
-      #   NOVA_AI_KEY_PASSWORD      – key password
-
-      - name: Resolve build inputs
-        id: inputs
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "flavor=${{ inputs.flavor }}"       >> "$GITHUB_OUTPUT"
-            echo "build_type=${{ inputs.build_type }}" >> "$GITHUB_OUTPUT"
-          else
-            echo "flavor=thirdParty" >> "$GITHUB_OUTPUT"
-            echo "build_type=release" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Decode keystore (release builds only)
-        if: steps.inputs.outputs.build_type == 'release'
+      # ── 5. Keystore (release only) ───────────────────────────────────────────
+      - name: Decode keystore
+        if: steps.params.outputs.is_release == 'true'
         run: |
           echo "${{ secrets.NOVA_AI_KEYSTORE_BASE64 }}" | base64 --decode > "$RUNNER_TEMP/nova-ai.jks"
 
-      - name: Write Gradle signing properties (release builds only)
-        if: steps.inputs.outputs.build_type == 'release'
-        run: |
-          mkdir -p "$HOME/.gradle"
-          cat >> "$HOME/.gradle/gradle.properties" << EOF
-          NOVA_AI_ANDROID_STORE_FILE=$RUNNER_TEMP/nova-ai.jks
-          NOVA_AI_ANDROID_STORE_PASSWORD=${{ secrets.NOVA_AI_KEYSTORE_PASSWORD }}
-          NOVA_AI_ANDROID_KEY_ALIAS=${{ secrets.NOVA_AI_KEY_ALIAS }}
-          NOVA_AI_ANDROID_KEY_PASSWORD=${{ secrets.NOVA_AI_KEY_PASSWORD }}
-          EOF
-
-      # ── 5. Build ─────────────────────────────────────────────────────────────
-      - name: Build APK
+      # ── 6. Build ─────────────────────────────────────────────────────────────
+      # Signing properties are passed as -P flags directly to Gradle.
+      # This avoids any gradle.properties indentation / timing issues.
+      - name: Build APK (release — signed)
+        if: steps.params.outputs.is_release == 'true'
         working-directory: apps/android
         run: |
           set -euo pipefail
-          FLAVOR="${{ steps.inputs.outputs.flavor }}"
-          BUILD_TYPE="${{ steps.inputs.outputs.build_type }}"
-
-          # Capitalise first letter for Gradle task name (e.g. thirdParty → ThirdParty)
-          FLAVOR_CAP="$(echo "${FLAVOR:0:1}" | tr '[:lower:]' '[:upper:]')${FLAVOR:1}"
-          BUILD_TYPE_CAP="$(echo "${BUILD_TYPE:0:1}" | tr '[:lower:]' '[:upper:]')${BUILD_TYPE:1}"
-
           ./gradlew --no-daemon --build-cache \
-            ":app:assemble${FLAVOR_CAP}${BUILD_TYPE_CAP}"
+            -PNOVA_AI_ANDROID_STORE_FILE="${RUNNER_TEMP}/nova-ai.jks" \
+            -PNOVA_AI_ANDROID_STORE_PASSWORD="${{ secrets.NOVA_AI_KEYSTORE_PASSWORD }}" \
+            -PNOVA_AI_ANDROID_KEY_ALIAS="${{ secrets.NOVA_AI_KEY_ALIAS }}" \
+            -PNOVA_AI_ANDROID_KEY_PASSWORD="${{ secrets.NOVA_AI_KEY_PASSWORD }}" \
+            "${{ steps.params.outputs.gradle_task }}"
 
-      # ── 6. Collect APK ───────────────────────────────────────────────────────
+      - name: Build APK (debug — unsigned)
+        if: steps.params.outputs.is_release == 'false'
+        working-directory: apps/android
+        run: |
+          set -euo pipefail
+          ./gradlew --no-daemon --build-cache \
+            "${{ steps.params.outputs.gradle_task }}"
+
+      # ── 7. Collect APK ───────────────────────────────────────────────────────
       - name: Locate APK
         id: apk
         run: |
+          set -euo pipefail
           APK_PATH=$(find apps/android/app/build/outputs/apk \
-            -name "nova-ai-*.apk" | head -1)
-          echo "path=${APK_PATH}" >> "$GITHUB_OUTPUT"
-          echo "name=$(basename ${APK_PATH})" >> "$GITHUB_OUTPUT"
+            -name "nova-ai-*.apk" -type f | head -1)
+
+          if [ -z "$APK_PATH" ]; then
+            echo "ERROR: No APK found. Listing build outputs for diagnosis:" >&2
+            find apps/android/app/build/outputs -type f | sort >&2
+            exit 1
+          fi
+
+          echo "path=${APK_PATH}"              >> "$GITHUB_OUTPUT"
+          echo "name=$(basename "${APK_PATH}")" >> "$GITHUB_OUTPUT"
           echo "Found APK: ${APK_PATH}"
 
-      # ── 7. Upload as artifact (every run) ────────────────────────────────────
+      # ── 8. Upload artifact (every run) ───────────────────────────────────────
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
@@ -164,7 +180,7 @@ jobs:
           path: ${{ steps.apk.outputs.path }}
           retention-days: 30
 
-      # ── 8. Attach to GitHub Release (tag pushes only) ────────────────────────
+      # ── 9. Attach to GitHub Release (tag pushes only) ────────────────────────
       - name: Attach APK to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
