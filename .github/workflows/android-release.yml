@@ -183,7 +183,7 @@ jobs:
       # ── 9. Attach to GitHub Release (tag pushes only) ────────────────────────
       - name: Attach APK to GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: ${{ steps.apk.outputs.path }}
           generate_release_notes: true
